@@ -64,7 +64,7 @@ specific it lists individual small muscles:
 | Legs | quads, hamstrings, glutes, calves, adductors |
 | Core | abs, obliques |
 
-21 muscles. Store as a reference table, not a hardcoded array.
+20 muscles. Store as a reference table, not a hardcoded array.
 
 **Weekly training score, two parts:**
 
