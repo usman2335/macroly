@@ -58,12 +58,12 @@ export default function EntryRow({
 
   if (editing) {
     return (
-      <div className="space-y-1 rounded-lg border border-neutral-300 p-2 dark:border-neutral-700">
+      <div className="space-y-2 py-2">
         <div className="flex items-center gap-2">
           <input
             value={label}
             onChange={(e) => setLabel(e.target.value)}
-            className="min-w-0 flex-1 rounded-lg border border-neutral-300 px-2 py-1 text-base outline-none focus:border-neutral-500 dark:border-neutral-700 dark:bg-neutral-950"
+            className="min-w-0 flex-1 rounded-md border border-line bg-transparent px-2 py-1 text-base text-ink outline-none focus:border-accent"
           />
           {hasAmount ? (
             <input
@@ -72,33 +72,24 @@ export default function EntryRow({
               type="number"
               inputMode="numeric"
               min={0}
-              className="w-20 rounded-lg border border-neutral-300 px-2 py-1 text-base outline-none focus:border-neutral-500 dark:border-neutral-700 dark:bg-neutral-950"
+              className="w-20 rounded-md border border-line bg-transparent px-2 py-1 text-base text-ink outline-none focus:border-accent font-mono"
             />
           ) : null}
         </div>
-        {error ? <p className="text-xs text-red-600 dark:text-red-400">{error}</p> : null}
-        <div className="flex justify-end gap-3 text-sm">
-          <button
-            type="button"
-            onClick={() => setEditing(false)}
-            className="text-neutral-500 dark:text-neutral-400"
-          >
+        {error ? <p className="text-xs text-zone-over">{error}</p> : null}
+        <div className="flex justify-end gap-4 text-sm">
+          <button type="button" onClick={() => setEditing(false)} className="text-muted">
             Cancel
           </button>
           <button
             type="button"
             onClick={remove}
             disabled={pending}
-            className="text-red-600 dark:text-red-400"
+            className="text-zone-over"
           >
             Delete
           </button>
-          <button
-            type="button"
-            onClick={save}
-            disabled={pending}
-            className="font-medium text-neutral-900 dark:text-neutral-50"
-          >
+          <button type="button" onClick={save} disabled={pending} className="text-accent">
             Save
           </button>
         </div>
@@ -110,20 +101,18 @@ export default function EntryRow({
     <button
       type="button"
       onClick={() => setEditing(true)}
-      className="flex w-full items-center justify-between rounded-lg px-2 py-1.5 text-left hover:bg-neutral-100 dark:hover:bg-neutral-900"
+      className="flex w-full items-center justify-between py-2 text-left"
     >
       <span className="flex min-w-0 items-center gap-1.5">
         {entry.kind === "activity" ? (
-          <span aria-hidden className="shrink-0 text-neutral-400 dark:text-neutral-500">
+          <span aria-hidden className="shrink-0 text-muted">
             🏋
           </span>
         ) : null}
-        <span className="truncate text-neutral-800 dark:text-neutral-200">{entry.label}</span>
+        <span className="truncate text-ink">{entry.label}</span>
       </span>
       {hasAmount ? (
-        <span className="shrink-0 pl-2 text-neutral-500 dark:text-neutral-400">
-          {entry.amount} cal
-        </span>
+        <span className="shrink-0 pl-2 font-mono text-muted">{entry.amount} cal</span>
       ) : null}
     </button>
   );

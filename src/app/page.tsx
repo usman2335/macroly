@@ -69,45 +69,39 @@ export default async function HomePage() {
   const eatenThisWeek = weekFood.reduce((sum, row) => sum + (row.amount ?? 0), 0);
 
   return (
-    <main className="flex min-h-dvh flex-col items-center gap-4 bg-neutral-50 px-4 py-8 dark:bg-neutral-950">
-      <div className="flex w-full max-w-sm items-center justify-between">
-        <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-50">
-          {profile.display_name}
-        </h1>
-        <div className="flex items-center gap-3">
-          <Link
-            href="/settings"
-            className="text-sm font-medium text-neutral-500 underline dark:text-neutral-400"
-          >
-            Settings
-          </Link>
-          <form action="/auth/logout" method="post">
-            <button
-              type="submit"
-              className="rounded-lg border border-neutral-300 px-3 py-1.5 text-sm font-medium text-neutral-700 dark:border-neutral-700 dark:text-neutral-300"
-            >
-              Log out
-            </button>
-          </form>
+    <main className="min-h-dvh bg-paper px-6 py-8">
+      <div className="mx-auto flex w-full max-w-sm flex-col gap-5">
+        <div className="flex items-baseline justify-between border-b border-line pb-4">
+          <h1 className="font-mono text-lg text-ink">{profile.display_name}</h1>
+          <div className="flex items-center gap-4">
+            <Link href="/settings" className="text-sm text-accent underline underline-offset-2">
+              Settings
+            </Link>
+            <form action="/auth/logout" method="post">
+              <button type="submit" className="text-sm text-muted underline underline-offset-2">
+                Log out
+              </button>
+            </form>
+          </div>
         </div>
+
+        <DailyAllowance
+          sedentaryMaintenance={profile.sedentary_maintenance}
+          activeMaintenance={profile.active_maintenance}
+        />
+
+        <WeekLog
+          today={today}
+          initialDate={today}
+          weekStartsOn={weekStartsOn}
+          sedentaryMaintenance={profile.sedentary_maintenance}
+          activeMaintenance={profile.active_maintenance}
+          initialWeekStart={weekStart}
+          initialFood={weekFood}
+          initialActivity={weekActivity}
+          initialEatenThisWeek={eatenThisWeek}
+        />
       </div>
-
-      <DailyAllowance
-        sedentaryMaintenance={profile.sedentary_maintenance}
-        activeMaintenance={profile.active_maintenance}
-      />
-
-      <WeekLog
-        today={today}
-        initialDate={today}
-        weekStartsOn={weekStartsOn}
-        sedentaryMaintenance={profile.sedentary_maintenance}
-        activeMaintenance={profile.active_maintenance}
-        initialWeekStart={weekStart}
-        initialFood={weekFood}
-        initialActivity={weekActivity}
-        initialEatenThisWeek={eatenThisWeek}
-      />
     </main>
   );
 }

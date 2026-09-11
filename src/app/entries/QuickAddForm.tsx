@@ -37,7 +37,7 @@ export default function QuickAddForm({
           type="text"
           required
           placeholder={kind === "food" ? "What did you eat?" : "Workout (e.g. Push day)"}
-          className="min-w-0 flex-1 rounded-lg border border-neutral-300 px-3 py-2 text-base outline-none focus:border-neutral-500 dark:border-neutral-700 dark:bg-neutral-950"
+          className="min-w-0 flex-1 rounded-md border border-line bg-transparent px-3 py-2 text-base text-ink outline-none focus:border-accent"
         />
         {kind === "food" ? (
           <input
@@ -48,21 +48,19 @@ export default function QuickAddForm({
             step={1}
             required
             placeholder="cal"
-            className="w-20 rounded-lg border border-neutral-300 px-2 py-2 text-base outline-none focus:border-neutral-500 dark:border-neutral-700 dark:bg-neutral-950"
+            className="w-20 rounded-md border border-line bg-transparent px-2 py-2 text-base text-ink outline-none focus:border-accent font-mono"
           />
         ) : null}
         <button
           type="submit"
           disabled={pending}
           aria-label="Add"
-          className="rounded-lg bg-neutral-900 px-3 py-2 text-base font-medium text-white disabled:opacity-60 dark:bg-neutral-50 dark:text-neutral-900"
+          className="rounded-md bg-accent px-3 py-2 text-base font-medium text-paper disabled:opacity-60"
         >
           +
         </button>
       </form>
-      {state.error ? (
-        <p className="text-xs text-red-600 dark:text-red-400">{state.error}</p>
-      ) : null}
+      {state.error ? <p className="text-xs text-zone-over">{state.error}</p> : null}
     </div>
   );
 }

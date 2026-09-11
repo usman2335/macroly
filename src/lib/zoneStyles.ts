@@ -6,8 +6,16 @@ export const ZONE_LABEL: Record<Zone, string> = {
   over: "Over",
 };
 
+/** Text + background classes, using the zone tokens defined in globals.css. */
 export const ZONE_CLASS: Record<Zone, string> = {
-  "on-target": "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300",
-  acceptable: "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300",
-  over: "bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300",
+  "on-target": "bg-zone-target-bg text-zone-target",
+  acceptable: "bg-zone-acceptable-bg text-zone-acceptable",
+  over: "bg-zone-over-bg text-zone-over",
+};
+
+/** A small stamp-like square swatch, for marking a day cell rather than a rounded status pill. */
+export const ZONE_SWATCH_CLASS: Record<Zone, string> = {
+  "on-target": "bg-zone-target",
+  acceptable: "bg-zone-acceptable",
+  over: "bg-zone-over",
 };

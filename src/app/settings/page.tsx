@@ -34,12 +34,10 @@ export default async function SettingsPage() {
   };
 
   return (
-    <main className="flex min-h-dvh flex-col items-center gap-6 bg-neutral-50 px-4 py-10 dark:bg-neutral-950">
-      <div className="w-full max-w-sm space-y-1">
-        <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-50">
-          {profile ? "Settings" : "Set up your profile"}
-        </h1>
-        <p className="text-sm text-neutral-500 dark:text-neutral-400">
+    <main className="flex min-h-dvh flex-col items-center gap-6 bg-paper px-6 py-10">
+      <div className="w-full max-w-sm">
+        <h1 className="text-lg text-ink">{profile ? "Settings" : "Set up your profile"}</h1>
+        <p className="mt-1 text-sm text-muted">
           {profile
             ? "Every field here is editable, including the maintenance numbers."
             : "A few stats to compute your maintenance calories."}
@@ -49,10 +47,7 @@ export default async function SettingsPage() {
       <ProfileForm initial={initial} />
 
       {profile ? (
-        <Link
-          href="/"
-          className="text-sm font-medium text-neutral-500 underline dark:text-neutral-400"
-        >
+        <Link href="/" className="text-sm text-accent underline underline-offset-2">
           Back home
         </Link>
       ) : null}

@@ -6,6 +6,7 @@ import { fetchWeekEntries, type EntryRow as WeekEntryRow } from "./actions";
 import QuickAddForm from "./QuickAddForm";
 import EntryRowItem, { type Entry } from "./EntryRow";
 import CalorieSummary from "./CalorieSummary";
+import WeekStrip from "./WeekStrip";
 
 type DayEntries = { food: Entry[]; activity: Entry[] };
 
@@ -84,6 +85,12 @@ export default function WeekLog({
     }
   }
 
+  function navigateWeek(direction: -1 | 1) {
+    const newWeekStart = addDays(weekStart, direction * 7);
+    setSelectedDate(newWeekStart);
+    loadWeek(newWeekStart);
+  }
+
   function handleAdded(entry: WeekEntryRow, kind: "food" | "activity") {
     const newEntry: Entry = { id: entry.id, kind, label: entry.label, amount: entry.amount };
     setEntriesByDate((prev) => {
@@ -149,7 +156,7 @@ export default function WeekLog({
   const entries = [...dayEntries.food, ...dayEntries.activity];
 
   return (
-    <div className="flex w-full flex-col items-center gap-4">
+    <div className="flex w-full flex-col gap-5">
       <CalorieSummary
         sedentaryMaintenance={sedentaryMaintenance}
         activeMaintenance={activeMaintenance}
@@ -158,60 +165,67 @@ export default function WeekLog({
         eatenToday={eatenToday}
       />
 
-      <div className="w-full max-w-sm space-y-4">
-        <div className="flex items-center justify-between">
-          <button
-            type="button"
-            onClick={() => changeDate(addDays(selectedDate, -1))}
-            className="rounded-lg px-3 py-1 text-lg text-neutral-500 dark:text-neutral-400"
-            aria-label="Previous day"
-          >
-            ‹
-          </button>
-          <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
-            {formatDateForDisplay(selectedDate)}
-            {loading ? "…" : ""}
-          </span>
-          <button
-            type="button"
-            onClick={() => changeDate(addDays(selectedDate, 1))}
-            className="rounded-lg px-3 py-1 text-lg text-neutral-500 dark:text-neutral-400"
-            aria-label="Next day"
-          >
-            ›
-          </button>
-        </div>
+      <WeekStrip
+        weekStart={weekStart}
+        entriesByDate={entriesByDate}
+        selectedDate={selectedDate}
+        sedentaryMaintenance={sedentaryMaintenance}
+        activeMaintenance={activeMaintenance}
+        loading={loading}
+        onSelectDate={changeDate}
+        onNavigateWeek={navigateWeek}
+      />
 
-        <div className="space-y-2">
-          <QuickAddForm
-            kind="food"
-            date={selectedDate}
-            onAdded={(entry) => handleAdded(entry, "food")}
-          />
-          <QuickAddForm
-            kind="activity"
-            date={selectedDate}
-            onAdded={(entry) => handleAdded(entry, "activity")}
-          />
-        </div>
-
-        {entries.length > 0 ? (
-          <div className="space-y-1 rounded-xl border border-neutral-200 bg-white p-2 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
-            {entries.map((entry) => (
-              <EntryRowItem
-                key={`${entry.kind}-${entry.id}`}
-                entry={entry}
-                onUpdated={handleUpdated}
-                onDeleted={handleDeleted}
-              />
-            ))}
-          </div>
-        ) : (
-          <p className="text-center text-sm text-neutral-400 dark:text-neutral-500">
-            Nothing logged yet.
-          </p>
-        )}
+      <div className="flex items-center justify-between">
+        <button
+          type="button"
+          onClick={() => changeDate(addDays(selectedDate, -1))}
+          className="px-1 text-muted"
+          aria-label="Previous day"
+        >
+          ‹
+        </button>
+        <span className="text-sm text-ink">
+          {formatDateForDisplay(selectedDate)}
+          {loading ? "…" : ""}
+        </span>
+        <button
+          type="button"
+          onClick={() => changeDate(addDays(selectedDate, 1))}
+          className="px-1 text-muted"
+          aria-label="Next day"
+        >
+          ›
+        </button>
       </div>
+
+      <div className="space-y-2">
+        <QuickAddForm
+          kind="food"
+          date={selectedDate}
+          onAdded={(entry) => handleAdded(entry, "food")}
+        />
+        <QuickAddForm
+          kind="activity"
+          date={selectedDate}
+          onAdded={(entry) => handleAdded(entry, "activity")}
+        />
+      </div>
+
+      {entries.length > 0 ? (
+        <div className="divide-y divide-line border-y border-line">
+          {entries.map((entry) => (
+            <EntryRowItem
+              key={`${entry.kind}-${entry.id}`}
+              entry={entry}
+              onUpdated={handleUpdated}
+              onDeleted={handleDeleted}
+            />
+          ))}
+        </div>
+      ) : (
+        <p className="text-sm text-muted">Nothing logged yet.</p>
+      )}
     </div>
   );
 }

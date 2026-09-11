@@ -26,8 +26,9 @@ export type ProfileFormValues = {
 const initialState: ProfileFormState = { error: "" };
 
 const inputClass =
-  "w-full rounded-lg border border-neutral-300 px-3 py-2 text-base outline-none focus:border-neutral-500 dark:border-neutral-700 dark:bg-neutral-950";
-const labelClass = "text-sm font-medium text-neutral-700 dark:text-neutral-300";
+  "w-full rounded-md border border-line bg-transparent px-3 py-2 text-base text-ink outline-none focus:border-accent";
+const numberInputClass = `${inputClass} font-mono`;
+const labelClass = "text-sm text-muted";
 
 export default function ProfileForm({ initial }: { initial: ProfileFormValues }) {
   const [state, formAction, pending] = useActionState(saveProfile, initialState);
@@ -63,7 +64,7 @@ export default function ProfileForm({ initial }: { initial: ProfileFormValues })
 
   return (
     <form action={formAction} className="w-full max-w-sm space-y-5">
-      <div className="space-y-1">
+      <div className="space-y-1.5">
         <label htmlFor="display_name" className={labelClass}>
           Name
         </label>
@@ -77,7 +78,7 @@ export default function ProfileForm({ initial }: { initial: ProfileFormValues })
         />
       </div>
 
-      <div className="space-y-1">
+      <div className="space-y-1.5">
         <label htmlFor="sex" className={labelClass}>
           Sex
         </label>
@@ -97,7 +98,7 @@ export default function ProfileForm({ initial }: { initial: ProfileFormValues })
         </select>
       </div>
 
-      <div className="space-y-1">
+      <div className="space-y-1.5">
         <label htmlFor="birth_date" className={labelClass}>
           Date of birth
         </label>
@@ -108,12 +109,12 @@ export default function ProfileForm({ initial }: { initial: ProfileFormValues })
           required
           ref={birthDateRef}
           defaultValue={initial.birth_date}
-          className={inputClass}
+          className={numberInputClass}
         />
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <div className="space-y-1">
+        <div className="space-y-1.5">
           <label htmlFor="height_cm" className={labelClass}>
             Height (cm)
           </label>
@@ -125,10 +126,10 @@ export default function ProfileForm({ initial }: { initial: ProfileFormValues })
             required
             ref={heightRef}
             defaultValue={initial.height_cm}
-            className={inputClass}
+            className={numberInputClass}
           />
         </div>
-        <div className="space-y-1">
+        <div className="space-y-1.5">
           <label htmlFor="weight_kg" className={labelClass}>
             Weight (kg)
           </label>
@@ -140,12 +141,12 @@ export default function ProfileForm({ initial }: { initial: ProfileFormValues })
             required
             ref={weightRef}
             defaultValue={initial.weight_kg}
-            className={inputClass}
+            className={numberInputClass}
           />
         </div>
       </div>
 
-      <div className="space-y-1">
+      <div className="space-y-1.5">
         <label htmlFor="gym_days_per_week" className={labelClass}>
           Gym days per week
         </label>
@@ -159,11 +160,11 @@ export default function ProfileForm({ initial }: { initial: ProfileFormValues })
           required
           ref={gymDaysRef}
           defaultValue={initial.gym_days_per_week}
-          className={inputClass}
+          className={numberInputClass}
         />
       </div>
 
-      <div className="space-y-1">
+      <div className="space-y-1.5">
         <label htmlFor="week_starts_on" className={labelClass}>
           Week starts on
         </label>
@@ -178,21 +179,19 @@ export default function ProfileForm({ initial }: { initial: ProfileFormValues })
         </select>
       </div>
 
-      <div className="space-y-3 rounded-lg border border-neutral-200 p-4 dark:border-neutral-800">
+      <div className="space-y-3 border-t border-line pt-5">
         <div className="flex items-center justify-between">
-          <p className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
-            Maintenance calories
-          </p>
+          <p className="text-sm text-muted">Maintenance calories</p>
           <button
             type="button"
             onClick={recalculate}
-            className="text-sm font-medium text-neutral-500 underline dark:text-neutral-400"
+            className="text-sm text-accent underline underline-offset-2"
           >
             Recalculate from stats
           </button>
         </div>
 
-        <div className="space-y-1">
+        <div className="space-y-1.5">
           <label htmlFor="sedentary_maintenance" className={labelClass}>
             Sedentary maintenance (your target)
           </label>
@@ -204,11 +203,11 @@ export default function ProfileForm({ initial }: { initial: ProfileFormValues })
             required
             ref={sedentaryRef}
             defaultValue={initial.sedentary_maintenance}
-            className={inputClass}
+            className={numberInputClass}
           />
         </div>
 
-        <div className="space-y-1">
+        <div className="space-y-1.5">
           <label htmlFor="active_maintenance" className={labelClass}>
             Activity-adjusted maintenance
           </label>
@@ -220,18 +219,20 @@ export default function ProfileForm({ initial }: { initial: ProfileFormValues })
             required
             ref={activeRef}
             defaultValue={initial.active_maintenance}
-            className={inputClass}
+            className={numberInputClass}
           />
         </div>
 
-        <p className="text-xs text-neutral-500 dark:text-neutral-400">
+        <p className="text-xs text-muted">
           Both numbers are editable — if you disagree with the math, type your own. Weekly budget
-          {weeklyBudget !== null ? ` is currently ${weeklyBudget} cal (sedentary × 7).` : " will show once saved."}
+          {weeklyBudget !== null
+            ? ` is currently ${weeklyBudget} cal (sedentary × 7).`
+            : " will show once saved."}
         </p>
       </div>
 
       {state.error ? (
-        <p className="text-sm text-red-600 dark:text-red-400" role="alert">
+        <p className="text-sm text-zone-over" role="alert">
           {state.error}
         </p>
       ) : null}
@@ -239,9 +240,9 @@ export default function ProfileForm({ initial }: { initial: ProfileFormValues })
       <button
         type="submit"
         disabled={pending}
-        className="w-full rounded-lg bg-neutral-900 px-3 py-2 text-base font-medium text-white disabled:opacity-60 dark:bg-neutral-50 dark:text-neutral-900"
+        className="w-full rounded-md bg-accent px-3 py-2 text-base font-medium text-paper disabled:opacity-60"
       >
-        {pending ? "Saving..." : "Save"}
+        {pending ? "Saving…" : "Save"}
       </button>
     </form>
   );

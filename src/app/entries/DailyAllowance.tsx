@@ -11,9 +11,10 @@ export default function DailyAllowance({
   activeMaintenance: number;
 }) {
   return (
-    <p className="w-full max-w-sm text-center text-xs text-neutral-500 dark:text-neutral-400">
-      Daily allowance: {sedentaryMaintenance} cal (no workout) · {activeMaintenance} cal (with
-      workout)
+    <p className="text-sm text-muted">
+      Daily allowance{" "}
+      <span className="font-mono text-ink">{sedentaryMaintenance}</span> without training,{" "}
+      <span className="font-mono text-ink">{activeMaintenance}</span> with
     </p>
   );
 }
