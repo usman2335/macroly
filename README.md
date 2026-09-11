@@ -1,7 +1,6 @@
 # Macroly
 
-A private calorie & training ledger for two people — me and my brother. Not a product, not
-going public.
+A private calorie & training ledger. Why? Couldn't really keep on relying on GPT to track my calories for me 🤦 so instead just asked Claude to build an app where I could keep track of them myself... after asking estimated calories from GPT 🤪
 
 ## Why this exists
 
