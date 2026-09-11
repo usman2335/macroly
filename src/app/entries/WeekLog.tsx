@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { addDays, formatDateForDisplay, getWeekStart } from "@/lib/date";
 import { fetchWeekEntries, type EntryRow as WeekEntryRow } from "./actions";
 import QuickAddForm from "./QuickAddForm";
 import EntryRowItem, { type Entry } from "./EntryRow";
-import CalorieSummary from "./CalorieSummary";
 import WeekStrip from "./WeekStrip";
 
 type DayEntries = { food: Entry[]; activity: Entry[] };
@@ -32,7 +32,6 @@ function groupByDate(food: WeekEntryRow[], activity: WeekEntryRow[]): Record<str
 }
 
 export default function WeekLog({
-  today,
   initialDate,
   weekStartsOn,
   sedentaryMaintenance,
@@ -40,9 +39,7 @@ export default function WeekLog({
   initialWeekStart,
   initialFood,
   initialActivity,
-  initialEatenThisWeek,
 }: {
-  today: string;
   initialDate: string;
   weekStartsOn: "monday" | "sunday";
   sedentaryMaintenance: number;
@@ -50,24 +47,14 @@ export default function WeekLog({
   initialWeekStart: string;
   initialFood: WeekEntryRow[];
   initialActivity: WeekEntryRow[];
-  initialEatenThisWeek: number;
 }) {
+  const router = useRouter();
   const [selectedDate, setSelectedDate] = useState(initialDate);
   const [weekStart, setWeekStart] = useState(initialWeekStart);
   const [entriesByDate, setEntriesByDate] = useState(() =>
     groupByDate(initialFood, initialActivity),
   );
-  const [eatenThisWeek, setEatenThisWeek] = useState(initialEatenThisWeek);
   const [loading, setLoading] = useState(false);
-
-  // The weekly summary always reflects the real current week, independent of which week is
-  // currently being browsed/edited below it — these can differ (e.g. fixing a forgotten entry
-  // from last week), so this range is fixed, not tied to `weekStart`.
-  const realCurrentWeekStart = getWeekStart(today, weekStartsOn);
-  const realCurrentWeekEnd = addDays(realCurrentWeekStart, 6);
-  function isWithinRealCurrentWeek(dateStr: string) {
-    return dateStr >= realCurrentWeekStart && dateStr <= realCurrentWeekEnd;
-  }
 
   async function loadWeek(newWeekStart: string) {
     setLoading(true);
@@ -91,6 +78,9 @@ export default function WeekLog({
     loadWeek(newWeekStart);
   }
 
+  // The dashboard's nutrition card lives outside this component now (Module 6) and gets its
+  // numbers from page.tsx's server render, so any mutation here needs to refresh that too —
+  // this component's own entriesByDate update is just for the instant local list feedback.
   function handleAdded(entry: WeekEntryRow, kind: "food" | "activity") {
     const newEntry: Entry = { id: entry.id, kind, label: entry.label, amount: entry.amount };
     setEntriesByDate((prev) => {
@@ -103,16 +93,10 @@ export default function WeekLog({
             : { ...day, activity: [...day.activity, newEntry] },
       };
     });
-    if (kind === "food" && isWithinRealCurrentWeek(entry.entry_date)) {
-      setEatenThisWeek((prev) => prev + (entry.amount ?? 0));
-    }
+    router.refresh();
   }
 
   function handleUpdated(updated: Entry) {
-    const day = entriesByDate[selectedDate] ?? { food: [], activity: [] };
-    const list = updated.kind === "food" ? day.food : day.activity;
-    const previous = list.find((e) => e.id === updated.id);
-
     setEntriesByDate((prev) => {
       const d = prev[selectedDate] ?? { food: [], activity: [] };
       const newList = (updated.kind === "food" ? d.food : d.activity).map((e) =>
@@ -124,17 +108,10 @@ export default function WeekLog({
           updated.kind === "food" ? { ...d, food: newList } : { ...d, activity: newList },
       };
     });
-
-    if (updated.kind === "food" && isWithinRealCurrentWeek(selectedDate)) {
-      const delta = (updated.amount ?? 0) - (previous?.amount ?? 0);
-      setEatenThisWeek((prev) => prev + delta);
-    }
+    router.refresh();
   }
 
   function handleDeleted(id: string, kind: "food" | "activity") {
-    const day = entriesByDate[selectedDate] ?? { food: [], activity: [] };
-    const removed = (kind === "food" ? day.food : day.activity).find((e) => e.id === id);
-
     setEntriesByDate((prev) => {
       const d = prev[selectedDate] ?? { food: [], activity: [] };
       return {
@@ -145,26 +122,14 @@ export default function WeekLog({
             : { ...d, activity: d.activity.filter((e) => e.id !== id) },
       };
     });
-
-    if (kind === "food" && removed && isWithinRealCurrentWeek(selectedDate)) {
-      setEatenThisWeek((prev) => prev - (removed.amount ?? 0));
-    }
+    router.refresh();
   }
 
   const dayEntries = entriesByDate[selectedDate] ?? { food: [], activity: [] };
-  const eatenToday = dayEntries.food.reduce((sum, e) => sum + (e.amount ?? 0), 0);
   const entries = [...dayEntries.food, ...dayEntries.activity];
 
   return (
     <div className="flex w-full flex-col gap-5">
-      <CalorieSummary
-        sedentaryMaintenance={sedentaryMaintenance}
-        activeMaintenance={activeMaintenance}
-        eatenThisWeek={eatenThisWeek}
-        selectedDate={selectedDate}
-        eatenToday={eatenToday}
-      />
-
       <WeekStrip
         weekStart={weekStart}
         entriesByDate={entriesByDate}

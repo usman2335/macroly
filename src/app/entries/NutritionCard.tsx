@@ -1,6 +1,5 @@
 import { calculateWeeklyBudget, calculateZone, type Zone } from "@/lib/calorie";
 import { ZONE_LABEL, ZONE_SWATCH_CLASS } from "@/lib/zoneStyles";
-import { formatDateForDisplay } from "@/lib/date";
 
 function remainingLabel(remaining: number): string {
   return remaining >= 0 ? `${remaining} cal left` : `${-remaining} cal over`;
@@ -22,16 +21,14 @@ function Row({
   size: "large" | "small";
 }) {
   return (
-    <div className="flex items-baseline justify-between gap-3 py-3">
+    <div className="flex items-baseline justify-between gap-3 py-2">
       <div className="flex items-baseline gap-2">
         <span className={`h-2.5 w-2.5 shrink-0 ${ZONE_SWATCH_CLASS[zone]}`} aria-hidden />
         <div>
           <p className="text-sm text-muted">
             {title} · {ZONE_LABEL[zone]}
           </p>
-          <p
-            className={`font-mono text-ink ${size === "large" ? "text-3xl" : "text-xl"}`}
-          >
+          <p className={`font-mono text-ink ${size === "large" ? "text-3xl" : "text-xl"}`}>
             {remainingLabel(remaining)}
           </p>
         </div>
@@ -46,22 +43,19 @@ function Row({
 }
 
 /**
- * Calorie status at both granularities — the week (always the real current week, "the most
- * important number in the whole app", see domain-rules.md) and the currently selected day below
- * (defaults to today). Both use the same sedentary/active maintenance figures, just scaled ×7
- * for the week. The week row is the one bold typographic moment on the page.
+ * The dashboard's nutrition card — always today and always the real current week, regardless of
+ * which day is being browsed/edited in the Nutrition tab below. A dashboard reports stable
+ * facts, not whatever the log's day-switcher currently happens to be pointed at.
  */
-export default function CalorieSummary({
+export default function NutritionCard({
   sedentaryMaintenance,
   activeMaintenance,
   eatenThisWeek,
-  selectedDate,
   eatenToday,
 }: {
   sedentaryMaintenance: number;
   activeMaintenance: number;
   eatenThisWeek: number;
-  selectedDate: string;
   eatenToday: number;
 }) {
   const weeklyBudget = calculateWeeklyBudget(sedentaryMaintenance);
@@ -71,27 +65,33 @@ export default function CalorieSummary({
     sedentaryMaintenance: weeklyBudget,
     activeMaintenance: weeklyActiveBudget,
   });
-
   const dayZone = calculateZone({ eaten: eatenToday, sedentaryMaintenance, activeMaintenance });
 
   return (
-    <div className="divide-y divide-line border-y border-line">
-      <Row
-        title="This week"
-        zone={weekZone}
-        remaining={weeklyBudget - eatenThisWeek}
-        used={eatenThisWeek}
-        budget={weeklyBudget}
-        size="large"
-      />
-      <Row
-        title={formatDateForDisplay(selectedDate)}
-        zone={dayZone}
-        remaining={sedentaryMaintenance - eatenToday}
-        used={eatenToday}
-        budget={sedentaryMaintenance}
-        size="small"
-      />
+    <div>
+      <p className="text-sm text-muted">Nutrition</p>
+      <div className="divide-y divide-line">
+        <Row
+          title="This week"
+          zone={weekZone}
+          remaining={weeklyBudget - eatenThisWeek}
+          used={eatenThisWeek}
+          budget={weeklyBudget}
+          size="large"
+        />
+        <Row
+          title="Today"
+          zone={dayZone}
+          remaining={sedentaryMaintenance - eatenToday}
+          used={eatenToday}
+          budget={sedentaryMaintenance}
+          size="small"
+        />
+      </div>
+      <p className="mt-2 text-xs text-muted">
+        Daily allowance <span className="font-mono text-ink">{sedentaryMaintenance}</span> without
+        training, <span className="font-mono text-ink">{activeMaintenance}</span> with
+      </p>
     </div>
   );
 }

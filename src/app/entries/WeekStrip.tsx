@@ -10,9 +10,9 @@ type DayEntries = { food: Entry[]; activity: Entry[] };
 /**
  * Seven days at a glance for whichever week is currently loaded (see Module 3 in roadmap.md).
  * Purely derived from entriesByDate, already cached by WeekLog — no query of its own. Distinct
- * from CalorieSummary's "This week" row: that one is always the real current week and frames
- * itself as "remaining"; this one can be any week you page back to, so it reports used-vs-budget
- * instead — "remaining" doesn't mean anything for a week that's already over.
+ * from the dashboard's NutritionCard "This week" row: that one is always the real current week
+ * and frames itself as "remaining"; this one can be any week you page back to, so it reports
+ * used-vs-budget instead — "remaining" doesn't mean anything for a week that's already over.
  */
 export default function WeekStrip({
   weekStart,

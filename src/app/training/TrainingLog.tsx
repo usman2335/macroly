@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { addDays, formatDateForDisplay } from "@/lib/date";
 import { capitalize, groupMuscles, type Muscle } from "@/lib/muscles";
 import { fetchWorkoutMuscles, saveWorkout } from "./actions";
@@ -20,6 +21,7 @@ export default function TrainingLog({
   initialDate: string;
   initialMuscleIds: string[];
 }) {
+  const router = useRouter();
   const [selectedDate, setSelectedDate] = useState(initialDate);
   // savedByDate mirrors what's actually persisted; draftByDate is what's on screen right now.
   // They diverge the moment you tap a muscle, and only reconverge on Save (or Discard).
@@ -74,6 +76,9 @@ export default function TrainingLog({
     }
     setError("");
     setSavedByDate((prev) => ({ ...prev, [selectedDate]: new Set(draft) }));
+    // The dashboard's training card and this tab's TrainingDetails both live outside this
+    // component (Module 6) and get their numbers from page.tsx's server render.
+    router.refresh();
   }
 
   return (
@@ -115,7 +120,7 @@ export default function TrainingLog({
                     key={muscle.id}
                     type="button"
                     onClick={() => toggleMuscle(muscle.id)}
-                    className={`rounded-md border px-3 py-1.5 text-sm ${
+                    className={`rounded-md border px-3 py-2 text-sm ${
                       isTrained ? "border-accent bg-accent text-paper" : "border-line text-ink"
                     }`}
                   >
