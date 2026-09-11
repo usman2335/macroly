@@ -54,3 +54,20 @@ export function calculateActiveMaintenance(bmr: number, gymDaysPerWeek: number):
 export function calculateWeeklyBudget(sedentaryMaintenance: number): number {
   return sedentaryMaintenance * 7;
 }
+
+export type Zone = "on-target" | "acceptable" | "over";
+
+/**
+ * The three zones (see "Three zones" in domain-rules.md). Uses calories *eaten* only — burned
+ * activity is already accounted for in activeMaintenance, so it's never double-counted here.
+ */
+export function calculateZone(params: {
+  eaten: number;
+  sedentaryMaintenance: number;
+  activeMaintenance: number;
+}): Zone {
+  const { eaten, sedentaryMaintenance, activeMaintenance } = params;
+  if (eaten <= sedentaryMaintenance) return "on-target";
+  if (eaten <= activeMaintenance) return "acceptable";
+  return "over";
+}

@@ -39,12 +39,13 @@ Week starts Monday (make this a setting, default Monday).
 
 ### Eaten vs burned
 
-Track **calories eaten** and **calories burned from activity** as two separate numbers. Provide
-a toggle to view them as a single net figure (`eaten − burned`). Both views must be available;
-neither is the only view.
+Activity entries do **not** track calories burned — they're a plain log of gym sessions
+(label only, e.g. "Push day"). Muscle-level detail comes later, in Module 4's separate
+`workouts`/`workout_muscles` tables — it is not bolted onto activity entries.
 
-Zone calculations use **eaten**, since burned activity is already accounted for in the
-activity-adjusted maintenance figure. Do not double-count activity.
+Zone calculations use **eaten** only. Since activity isn't logged with a calorie figure, there's
+nothing to double-count — the activity-adjusted maintenance figure already accounts for training
+via the gym-days multiplier, which is exactly why activity entries don't need their own number.
 
 ## Training
 

@@ -8,7 +8,8 @@ profiles          id (= auth.users.id), display_name, sex, birth_date, height_cm
                   weight_kg, gym_days_per_week, goal, sedentary_maintenance,
                   active_maintenance, week_starts_on
 food_entries      id, user_id, entry_date, label, calories, note, created_at
-activity_entries  id, user_id, entry_date, label, calories_burned, note, created_at
+activity_entries  id, user_id, entry_date, label, calories_burned (unused, always null — a plain
+                  gym-session log; see domain-rules.md), note, created_at
 muscles           id, slug, name, muscle_group, sort_order        (reference data)
 workouts          id, user_id, session_date, note, created_at
 workout_muscles   workout_id, muscle_id

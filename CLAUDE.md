@@ -43,6 +43,10 @@ Reference material lives in `docs/` — read the relevant one before working on 
 
 - **Build one module at a time**, per [docs/roadmap.md](docs/roadmap.md). Each module must be
   working and usable on a phone before the next one starts. Do not build ahead.
+- **Favor a single page over navigation.** Keep as much as reasonably possible — quick-glance
+  info, quick-add actions — on the home screen itself rather than a separate route. Not
+  everything can fit (a full settings form, a full week view genuinely need their own screen),
+  but default to adding to the home screen unless there's a real reason not to.
 - **No AI calls, no API keys, no per-use cost.** No food database, no barcode scanning, no
   recipe builder.
 - **No sets/reps/weights** in training logging.
