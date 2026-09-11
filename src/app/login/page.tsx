@@ -22,7 +22,7 @@ export default function LoginPage() {
       >
         <div className="space-y-1 text-center">
           <h1 className="text-lg font-semibold text-neutral-900 dark:text-neutral-50">
-            FatTrack
+            Macroly
           </h1>
           <p className="text-sm text-neutral-500 dark:text-neutral-400">Sign in to continue</p>
         </div>

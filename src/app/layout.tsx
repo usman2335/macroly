@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FatTrack",
+  title: "Macroly",
   description: "Personal calorie and training tracker",
 };
 
