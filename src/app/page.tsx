@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { addDays, getWeekStart, todayDateString } from "@/lib/date";
+import { DEFAULT_WEEKLY_TARGET } from "@/lib/training";
 import HomeTabs from "./HomeTabs";
 import DailyAllowance from "./entries/DailyAllowance";
 import TrainingWeekWidget from "./training/TrainingWeekWidget";
@@ -30,12 +31,15 @@ export default async function HomePage() {
     { data: food },
     { data: activity },
     { data: muscles },
+    { data: muscleTargets },
     { data: workoutsInWindow },
     { data: todaysWorkout },
   ] = await Promise.all([
     supabase
       .from("profiles")
-      .select("display_name, sedentary_maintenance, active_maintenance, week_starts_on")
+      .select(
+        "display_name, sedentary_maintenance, active_maintenance, week_starts_on, gym_days_per_week",
+      )
       .eq("id", user.id)
       .maybeSingle(),
     supabase
@@ -53,9 +57,10 @@ export default async function HomePage() {
       .lte("entry_date", bufferEnd)
       .order("created_at", { ascending: true }),
     supabase.from("muscles").select("id, name, muscle_group").order("sort_order"),
+    supabase.from("muscle_targets").select("muscle_id, weekly_target").eq("user_id", user.id),
     supabase
       .from("workouts")
-      .select("session_date")
+      .select("id, session_date")
       .eq("user_id", user.id)
       .gte("session_date", bufferStart)
       .lte("session_date", bufferEnd),
@@ -89,9 +94,25 @@ export default async function HomePage() {
 
   const eatenThisWeek = weekFood.reduce((sum, row) => sum + (row.amount ?? 0), 0);
 
-  const workoutsThisWeek = (workoutsInWindow ?? []).filter(
+  const weekWorkouts = (workoutsInWindow ?? []).filter(
     (w) => w.session_date >= weekStart && w.session_date <= weekEnd,
-  ).length;
+  );
+  const workoutsThisWeek = weekWorkouts.length;
+
+  const weekWorkoutIds = weekWorkouts.map((w) => w.id);
+  const { data: weekWorkoutMuscles } =
+    weekWorkoutIds.length > 0
+      ? await supabase.from("workout_muscles").select("muscle_id").in("workout_id", weekWorkoutIds)
+      : { data: [] as { muscle_id: string }[] };
+
+  const hitsByMuscle: Record<string, number> = {};
+  for (const row of weekWorkoutMuscles ?? []) {
+    hitsByMuscle[row.muscle_id] = (hitsByMuscle[row.muscle_id] ?? 0) + 1;
+  }
+
+  const targetsByMuscle: Record<string, number> = {};
+  for (const muscle of muscles ?? []) targetsByMuscle[muscle.id] = DEFAULT_WEEKLY_TARGET;
+  for (const row of muscleTargets ?? []) targetsByMuscle[row.muscle_id] = row.weekly_target;
 
   const initialMuscleIds = todaysWorkout
     ? (
@@ -136,6 +157,10 @@ export default async function HomePage() {
           initialEatenThisWeek={eatenThisWeek}
           muscles={muscles ?? []}
           initialMuscleIds={initialMuscleIds}
+          hitsByMuscle={hitsByMuscle}
+          targetsByMuscle={targetsByMuscle}
+          sessionsLogged={workoutsThisWeek}
+          plannedGymDays={profile.gym_days_per_week}
         />
       </div>
     </main>

@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import WeekLog from "./entries/WeekLog";
-import TrainingLog, { type Muscle } from "./training/TrainingLog";
+import TrainingLog from "./training/TrainingLog";
+import WeeklyTrainingSummary from "./training/WeeklyTrainingSummary";
+import type { Muscle } from "@/lib/muscles";
 import type { EntryRow as WeekEntryRow } from "./entries/actions";
 
 type Tab = "nutrition" | "training";
@@ -18,6 +20,10 @@ export default function HomeTabs({
   initialEatenThisWeek,
   muscles,
   initialMuscleIds,
+  hitsByMuscle,
+  targetsByMuscle,
+  sessionsLogged,
+  plannedGymDays,
 }: {
   today: string;
   weekStartsOn: "monday" | "sunday";
@@ -29,6 +35,10 @@ export default function HomeTabs({
   initialEatenThisWeek: number;
   muscles: Muscle[];
   initialMuscleIds: string[];
+  hitsByMuscle: Record<string, number>;
+  targetsByMuscle: Record<string, number>;
+  sessionsLogged: number;
+  plannedGymDays: number;
 }) {
   const [tab, setTab] = useState<Tab>("nutrition");
 
@@ -67,7 +77,16 @@ export default function HomeTabs({
           initialEatenThisWeek={initialEatenThisWeek}
         />
       ) : (
-        <TrainingLog muscles={muscles} initialDate={today} initialMuscleIds={initialMuscleIds} />
+        <div className="flex flex-col gap-5">
+          <WeeklyTrainingSummary
+            muscles={muscles}
+            hitsByMuscle={hitsByMuscle}
+            targetsByMuscle={targetsByMuscle}
+            sessionsLogged={sessionsLogged}
+            plannedGymDays={plannedGymDays}
+          />
+          <TrainingLog muscles={muscles} initialDate={today} initialMuscleIds={initialMuscleIds} />
+        </div>
       )}
     </div>
   );

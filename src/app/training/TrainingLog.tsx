@@ -2,30 +2,8 @@
 
 import { useState } from "react";
 import { addDays, formatDateForDisplay } from "@/lib/date";
+import { capitalize, groupMuscles, type Muscle } from "@/lib/muscles";
 import { fetchWorkoutMuscles, saveWorkout } from "./actions";
-
-export type Muscle = {
-  id: string;
-  name: string;
-  muscle_group: string;
-};
-
-function capitalize(word: string): string {
-  return word.charAt(0).toUpperCase() + word.slice(1);
-}
-
-function groupMuscles(muscles: Muscle[]): { group: string; muscles: Muscle[] }[] {
-  const groups: { group: string; muscles: Muscle[] }[] = [];
-  for (const muscle of muscles) {
-    let bucket = groups.find((g) => g.group === muscle.muscle_group);
-    if (!bucket) {
-      bucket = { group: muscle.muscle_group, muscles: [] };
-      groups.push(bucket);
-    }
-    bucket.muscles.push(muscle);
-  }
-  return groups;
-}
 
 function sameMembers(a: Set<string>, b: Set<string>): boolean {
   if (a.size !== b.size) return false;

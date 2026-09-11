@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import ProfileForm, { type ProfileFormValues } from "./ProfileForm";
+import MuscleTargetsForm from "./MuscleTargetsForm";
 
 export default async function SettingsPage() {
   const supabase = await createClient();
@@ -13,13 +14,17 @@ export default async function SettingsPage() {
     redirect("/login");
   }
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select(
-      "display_name, sex, birth_date, height_cm, weight_kg, gym_days_per_week, sedentary_maintenance, active_maintenance, week_starts_on",
-    )
-    .eq("id", user.id)
-    .maybeSingle();
+  const [{ data: profile }, { data: muscles }, { data: muscleTargets }] = await Promise.all([
+    supabase
+      .from("profiles")
+      .select(
+        "display_name, sex, birth_date, height_cm, weight_kg, gym_days_per_week, sedentary_maintenance, active_maintenance, week_starts_on",
+      )
+      .eq("id", user.id)
+      .maybeSingle(),
+    supabase.from("muscles").select("id, name, muscle_group").order("sort_order"),
+    supabase.from("muscle_targets").select("muscle_id, weekly_target").eq("user_id", user.id),
+  ]);
 
   const initial: ProfileFormValues = {
     display_name: profile?.display_name ?? "",
@@ -33,6 +38,9 @@ export default async function SettingsPage() {
     week_starts_on: (profile?.week_starts_on as ProfileFormValues["week_starts_on"]) ?? "monday",
   };
 
+  const targets: Record<string, number> = {};
+  for (const row of muscleTargets ?? []) targets[row.muscle_id] = row.weekly_target;
+
   return (
     <main className="flex min-h-dvh flex-col items-center gap-6 bg-paper px-6 py-10">
       <div className="w-full max-w-sm">
@@ -45,6 +53,12 @@ export default async function SettingsPage() {
       </div>
 
       <ProfileForm initial={initial} />
+
+      {profile ? (
+        <div className="w-full max-w-sm border-t border-line pt-6">
+          <MuscleTargetsForm muscles={muscles ?? []} targets={targets} />
+        </div>
+      ) : null}
 
       {profile ? (
         <Link href="/" className="text-sm text-accent underline underline-offset-2">

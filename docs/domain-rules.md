@@ -66,17 +66,23 @@ specific it lists individual small muscles:
 
 20 muscles. Store as a reference table, not a hardcoded array.
 
-**Weekly training score, two parts:**
+**Weekly training score, two parts, shown separately — never averaged into hiding one behind
+the other:**
 
 1. **Adherence** — sessions logged ÷ planned gym days for the week. Capped at 100%.
 2. **Coverage** — how well the muscles hit match their per-muscle weekly targets.
    `sum(min(hits, target)) / sum(targets)`. Hitting chest 4× while missing hamstrings entirely
    must score badly.
 
+A **combined score** is also shown, alongside (not instead of) the two above: the plain average
+of adherence and coverage. It's a headline convenience, not a replacement — the two parts stay
+visible so a bad half never hides behind a decent-looking average.
+
 Plus a **focus next week** list: muscles that fell short of target, worst first.
 
-Per-muscle weekly targets are **not yet decided** — defaults vs user-set is an open question,
-see [open-questions.md](open-questions.md), to settle in Module 5.
+Per-muscle weekly targets: a flat default (currently 2×/week for every muscle), fully editable
+per muscle in Settings — same computed-default-with-override pattern as the Module 1 maintenance
+figures.
 
 ## A note on accuracy
 

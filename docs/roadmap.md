@@ -43,9 +43,9 @@ muscles trained. Edit and delete sessions.
 *Done when:* a workout can be logged in a few taps.
 
 ### Module 5 — Weekly training view
-Adherence score, coverage score, per-muscle hit counts for the week, and the focus-next-week
-list. Decide and implement per-muscle weekly targets here (see
-[open-questions.md](open-questions.md)).
+Adherence score, coverage score, a combined score alongside them, per-muscle hit counts for the
+week, and the focus-next-week list. Per-muscle weekly targets, editable in Settings (see
+[open-questions.md](open-questions.md) for how these got decided).
 
 *Done when:* it's clear which muscles were missed and what to prioritise.
 

@@ -69,3 +69,41 @@ export async function saveProfile(
 
   redirect("/");
 }
+
+export async function saveMuscleTargets(
+  _prevState: ProfileFormState,
+  formData: FormData,
+): Promise<ProfileFormState> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const rows: { user_id: string; muscle_id: string; weekly_target: number }[] = [];
+  for (const [key, value] of formData.entries()) {
+    if (!key.startsWith("target_")) continue;
+    const target = Number(value);
+    if (!Number.isFinite(target) || target < 0) {
+      return { error: "Targets must be non-negative numbers." };
+    }
+    rows.push({
+      user_id: user.id,
+      muscle_id: key.slice("target_".length),
+      weekly_target: Math.round(target),
+    });
+  }
+
+  const { error } = await supabase
+    .from("muscle_targets")
+    .upsert(rows, { onConflict: "user_id,muscle_id" });
+
+  if (error) {
+    return { error: error.message };
+  }
+
+  redirect("/");
+}
