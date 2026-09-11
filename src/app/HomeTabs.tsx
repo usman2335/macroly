@@ -17,13 +17,12 @@ const TABS: readonly [Tab, string][] = [
 
 export default function HomeTabs({
   today,
-  displayName,
   weekStartsOn,
   sedentaryMaintenance,
   activeMaintenance,
   initialWeekStart,
   initialFood,
-  initialActivity,
+  initialWorkoutDates,
   muscles,
   initialMuscleIds,
   hitsByMuscle,
@@ -31,13 +30,12 @@ export default function HomeTabs({
   sidebarMinHeight,
 }: {
   today: string;
-  displayName: string;
   weekStartsOn: "monday" | "sunday";
   sedentaryMaintenance: number;
   activeMaintenance: number;
   initialWeekStart: string;
   initialFood: WeekEntryRow[];
-  initialActivity: WeekEntryRow[];
+  initialWorkoutDates: string[];
   muscles: Muscle[];
   initialMuscleIds: string[];
   hitsByMuscle: Record<string, number>;
@@ -80,7 +78,6 @@ export default function HomeTabs({
         {/* Account controls, pinned to the bottom of the sidebar (see the phone equivalent in
             page.tsx's header — there's no sidebar to hold them there). */}
         <div className="mt-auto space-y-2">
-          {/* <p className="truncate text-sm text-ink">{displayName}</p> */}
           <Link
             href="/settings"
             className="block rounded-md border border-line px-3 py-1.5 text-center text-sm text-ink"
@@ -111,7 +108,7 @@ export default function HomeTabs({
             activeMaintenance={activeMaintenance}
             initialWeekStart={initialWeekStart}
             initialFood={initialFood}
-            initialActivity={initialActivity}
+            initialWorkoutDates={initialWorkoutDates}
           />
         ) : (
           <div className="flex flex-col gap-5">

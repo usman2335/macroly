@@ -29,7 +29,6 @@ export default async function HomePage() {
   const [
     { data: profile },
     { data: food },
-    { data: activity },
     { data: muscles },
     { data: muscleTargets },
     { data: workoutsInWindow },
@@ -45,13 +44,6 @@ export default async function HomePage() {
     supabase
       .from("food_entries")
       .select("id, entry_date, label, calories")
-      .eq("user_id", user.id)
-      .gte("entry_date", bufferStart)
-      .lte("entry_date", bufferEnd)
-      .order("created_at", { ascending: true }),
-    supabase
-      .from("activity_entries")
-      .select("id, entry_date, label, calories_burned")
       .eq("user_id", user.id)
       .gte("entry_date", bufferStart)
       .lte("entry_date", bufferEnd)
@@ -83,15 +75,6 @@ export default async function HomePage() {
   const weekFood = (food ?? [])
     .filter((r) => r.entry_date >= weekStart && r.entry_date <= weekEnd)
     .map((r) => ({ id: r.id, entry_date: r.entry_date, label: r.label, amount: r.calories }));
-  const weekActivity = (activity ?? [])
-    .filter((r) => r.entry_date >= weekStart && r.entry_date <= weekEnd)
-    .map((r) => ({
-      id: r.id,
-      entry_date: r.entry_date,
-      label: r.label,
-      amount: r.calories_burned,
-    }));
-
   const eatenThisWeek = weekFood.reduce((sum, row) => sum + (row.amount ?? 0), 0);
   const eatenToday = weekFood
     .filter((row) => row.entry_date === today)
@@ -162,13 +145,12 @@ export default async function HomePage() {
 
         <HomeLayout
           today={today}
-          displayName={profile.display_name}
           weekStartsOn={weekStartsOn}
           sedentaryMaintenance={profile.sedentary_maintenance}
           activeMaintenance={profile.active_maintenance}
           initialWeekStart={weekStart}
           initialFood={weekFood}
-          initialActivity={weekActivity}
+          initialWorkoutDates={weekWorkouts.map((w) => w.session_date)}
           muscles={muscles ?? []}
           initialMuscleIds={initialMuscleIds}
           hitsByMuscle={hitsByMuscle}

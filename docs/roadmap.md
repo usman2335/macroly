@@ -19,10 +19,13 @@ allowed.
 *Done when:* stats are filled in and both maintenance numbers plus the weekly budget are visible.
 
 ### Module 2 — Daily logging
-Add food entries for a date: label + calories. Add activity entries: a plain gym-session log,
-label only, no calories (see domain-rules.md — muscle detail is deferred to Module 4). Edit and
-delete any entry. Built into the home screen itself, not a separate page (see the single-page
-UX preference). Today's view shows the day's list and total eaten.
+Add food entries for a date: label + calories. Edit and delete any entry. Built into the home
+screen itself, not a separate page (see the single-page UX preference). Today's view shows the
+day's list and total eaten.
+
+(This module originally also had a plain label-only activity/gym-session log, before Module 4's
+muscle-based training system existed. Retired once Module 4/5 made it redundant — see
+domain-rules.md's "Eaten vs burned".)
 
 Entry must be fast — this is the screen used every single day. Minimum taps, date defaults to
 today, easy to switch to yesterday.

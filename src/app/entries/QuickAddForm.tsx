@@ -7,11 +7,9 @@ type State = { error: string };
 const initialState: State = { error: "" };
 
 export default function QuickAddForm({
-  kind,
   date,
   onAdded,
 }: {
-  kind: "food" | "activity";
   date: string;
   onAdded: (entry: EntryRow) => void;
 }) {
@@ -30,27 +28,24 @@ export default function QuickAddForm({
   return (
     <div className="space-y-1">
       <form ref={formRef} action={formAction} className="flex items-start gap-2">
-        <input type="hidden" name="kind" value={kind} />
         <input type="hidden" name="entry_date" value={date} />
         <input
           name="label"
           type="text"
           required
-          placeholder={kind === "food" ? "What did you eat?" : "Workout (e.g. Push day)"}
+          placeholder="What did you eat?"
           className="min-w-0 flex-1 rounded-md border border-line bg-transparent px-3 py-2 text-base text-ink outline-none focus:border-accent"
         />
-        {kind === "food" ? (
-          <input
-            name="amount"
-            type="number"
-            inputMode="numeric"
-            min={0}
-            step={1}
-            required
-            placeholder="cal"
-            className="w-20 rounded-md border border-line bg-transparent px-2 py-2 text-base text-ink outline-none focus:border-accent font-mono"
-          />
-        ) : null}
+        <input
+          name="amount"
+          type="number"
+          inputMode="numeric"
+          min={0}
+          step={1}
+          required
+          placeholder="cal"
+          className="w-20 rounded-md border border-line bg-transparent px-2 py-2 text-base text-ink outline-none focus:border-accent font-mono"
+        />
         <button
           type="submit"
           disabled={pending}

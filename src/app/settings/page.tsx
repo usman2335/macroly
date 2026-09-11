@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import ProfileForm, { type ProfileFormValues } from "./ProfileForm";
-import MuscleTargetsForm from "./MuscleTargetsForm";
+import SettingsTabs from "./SettingsTabs";
 
 export default async function SettingsPage() {
   const supabase = await createClient();
@@ -43,7 +43,7 @@ export default async function SettingsPage() {
 
   return (
     <main className="flex min-h-dvh flex-col items-center gap-6 bg-paper px-6 py-10">
-      <div className="w-full max-w-sm">
+      <div className="w-full max-w-3xl">
         <h1 className="text-lg text-ink">{profile ? "Settings" : "Set up your profile"}</h1>
         <p className="mt-1 text-sm text-muted">
           {profile
@@ -52,13 +52,12 @@ export default async function SettingsPage() {
         </p>
       </div>
 
-      <ProfileForm initial={initial} />
-
       {profile ? (
-        <div className="w-full max-w-sm border-t border-line pt-6">
-          <MuscleTargetsForm muscles={muscles ?? []} targets={targets} />
-        </div>
-      ) : null}
+        <SettingsTabs initial={initial} muscles={muscles ?? []} targets={targets} />
+      ) : (
+        // No sections to switch between yet during onboarding — just the one form.
+        <ProfileForm initial={initial} />
+      )}
 
       {profile ? (
         <Link href="/" className="text-sm text-accent underline underline-offset-2">

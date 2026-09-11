@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useActionState } from "react";
 import { saveMuscleTargets, type ProfileFormState } from "./actions";
 import { capitalize, groupMuscles, type Muscle } from "@/lib/muscles";
@@ -15,6 +16,7 @@ export default function MuscleTargetsForm({
 }) {
   const [state, formAction, pending] = useActionState(saveMuscleTargets, initialState);
   const groups = groupMuscles(muscles);
+  const [activeGroup, setActiveGroup] = useState(groups[0]?.group);
 
   return (
     <form action={formAction} className="w-full space-y-5">
@@ -25,27 +27,41 @@ export default function MuscleTargetsForm({
         </p>
       </div>
 
+      {/* All groups stay mounted (just visually hidden) so switching tabs never drops an edit
+          you made in another group — one Save still submits every muscle's value at once. */}
+      <div className="flex flex-wrap gap-1 border-b border-line">
+        {groups.map(({ group }) => (
+          <button
+            key={group}
+            type="button"
+            onClick={() => setActiveGroup(group)}
+            className={`-mb-px border-b-2 px-2 py-2 text-sm ${
+              activeGroup === group ? "border-accent text-ink" : "border-transparent text-muted"
+            }`}
+          >
+            {capitalize(group)}
+          </button>
+        ))}
+      </div>
+
       {groups.map(({ group, muscles: groupMuscleList }) => (
-        <div key={group} className="space-y-1.5">
-          <p className="text-sm text-muted">{capitalize(group)}</p>
-          <div className="space-y-1.5">
-            {groupMuscleList.map((muscle) => (
-              <div key={muscle.id} className="flex items-center justify-between gap-3">
-                <label htmlFor={`target_${muscle.id}`} className="text-sm text-ink">
-                  {muscle.name}
-                </label>
-                <input
-                  id={`target_${muscle.id}`}
-                  name={`target_${muscle.id}`}
-                  type="number"
-                  min={0}
-                  step={1}
-                  defaultValue={targets[muscle.id] ?? 2}
-                  className="w-16 rounded-md border border-line bg-transparent px-2 py-1 text-right font-mono text-ink outline-none focus:border-accent"
-                />
-              </div>
-            ))}
-          </div>
+        <div key={group} className={activeGroup === group ? "space-y-1.5" : "hidden"}>
+          {groupMuscleList.map((muscle) => (
+            <div key={muscle.id} className="flex items-center justify-between gap-3">
+              <label htmlFor={`target_${muscle.id}`} className="text-sm text-ink">
+                {muscle.name}
+              </label>
+              <input
+                id={`target_${muscle.id}`}
+                name={`target_${muscle.id}`}
+                type="number"
+                min={0}
+                step={1}
+                defaultValue={targets[muscle.id] ?? 2}
+                className="w-16 rounded-md border border-line bg-transparent px-2 py-1 text-right font-mono text-ink outline-none focus:border-accent"
+              />
+            </div>
+          ))}
         </div>
       ))}
 

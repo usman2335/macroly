@@ -39,13 +39,15 @@ Week starts Monday (make this a setting, default Monday).
 
 ### Eaten vs burned
 
-Activity entries do **not** track calories burned — they're a plain log of gym sessions
-(label only, e.g. "Push day"). Muscle-level detail comes later, in Module 4's separate
-`workouts`/`workout_muscles` tables — it is not bolted onto activity entries.
+There is no separate activity/calories-burned log. Training is logged once, properly, in the
+Training tab (which muscles were trained — see below); a day counts as a workout day if it has
+a `workouts` row, which the nutrition week strip reads directly to show its workout marker. An
+earlier, simpler stand-in (`activity_entries`, a plain label-only gym-session log with no
+calories) existed before the muscle-based system was built and has since been retired.
 
-Zone calculations use **eaten** only. Since activity isn't logged with a calorie figure, there's
+Zone calculations use **eaten** only. Training isn't logged with a calorie figure, so there's
 nothing to double-count — the activity-adjusted maintenance figure already accounts for training
-via the gym-days multiplier, which is exactly why activity entries don't need their own number.
+via the gym-days multiplier.
 
 ## Training
 

@@ -5,18 +5,18 @@ import { calculateWeeklyBudget, calculateZone } from "@/lib/calorie";
 import { ZONE_LABEL, ZONE_SWATCH_CLASS } from "@/lib/zoneStyles";
 import type { Entry } from "./EntryRow";
 
-type DayEntries = { food: Entry[]; activity: Entry[] };
-
 /**
  * Seven days at a glance for whichever week is currently loaded (see Module 3 in roadmap.md).
- * Purely derived from entriesByDate, already cached by WeekLog — no query of its own. Distinct
- * from the dashboard's NutritionCard "This week" row: that one is always the real current week
- * and frames itself as "remaining"; this one can be any week you page back to, so it reports
- * used-vs-budget instead — "remaining" doesn't mean anything for a week that's already over.
+ * Purely derived from entriesByDate and workoutDates, already cached by WeekLog — no query of
+ * its own. Distinct from the dashboard's NutritionCard "This week" row: that one is always the
+ * real current week and frames itself as "remaining"; this one can be any week you page back to,
+ * so it reports used-vs-budget instead — "remaining" doesn't mean anything for a week that's
+ * already over.
  */
 export default function WeekStrip({
   weekStart,
   entriesByDate,
+  workoutDates,
   selectedDate,
   sedentaryMaintenance,
   activeMaintenance,
@@ -25,7 +25,8 @@ export default function WeekStrip({
   onNavigateWeek,
 }: {
   weekStart: string;
-  entriesByDate: Record<string, DayEntries>;
+  entriesByDate: Record<string, Entry[]>;
+  workoutDates: Set<string>;
   selectedDate: string;
   sedentaryMaintenance: number;
   activeMaintenance: number;
@@ -38,9 +39,9 @@ export default function WeekStrip({
 
   const dayInfo = days.map((date) => {
     const entries = entriesByDate[date];
-    const eaten = entries?.food.reduce((sum, e) => sum + (e.amount ?? 0), 0) ?? 0;
-    const logged = (entries?.food.length ?? 0) > 0;
-    const hasWorkout = (entries?.activity.length ?? 0) > 0;
+    const eaten = entries?.reduce((sum, e) => sum + e.amount, 0) ?? 0;
+    const logged = (entries?.length ?? 0) > 0;
+    const hasWorkout = workoutDates.has(date);
     return { date, eaten, logged, hasWorkout };
   });
 

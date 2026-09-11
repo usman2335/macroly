@@ -14,13 +14,12 @@ import type { EntryRow as WeekEntryRow } from "./entries/actions";
 export default function HomeLayout({
   dashboard,
   today,
-  displayName,
   weekStartsOn,
   sedentaryMaintenance,
   activeMaintenance,
   initialWeekStart,
   initialFood,
-  initialActivity,
+  initialWorkoutDates,
   muscles,
   initialMuscleIds,
   hitsByMuscle,
@@ -28,13 +27,12 @@ export default function HomeLayout({
 }: {
   dashboard: ReactNode;
   today: string;
-  displayName: string;
   weekStartsOn: "monday" | "sunday";
   sedentaryMaintenance: number;
   activeMaintenance: number;
   initialWeekStart: string;
   initialFood: WeekEntryRow[];
-  initialActivity: WeekEntryRow[];
+  initialWorkoutDates: string[];
   muscles: Muscle[];
   initialMuscleIds: string[];
   hitsByMuscle: Record<string, number>;
@@ -62,13 +60,12 @@ export default function HomeLayout({
       <div className="lg:order-1 lg:flex-1">
         <HomeTabs
           today={today}
-          displayName={displayName}
           weekStartsOn={weekStartsOn}
           sedentaryMaintenance={sedentaryMaintenance}
           activeMaintenance={activeMaintenance}
           initialWeekStart={initialWeekStart}
           initialFood={initialFood}
-          initialActivity={initialActivity}
+          initialWorkoutDates={initialWorkoutDates}
           muscles={muscles}
           initialMuscleIds={initialMuscleIds}
           hitsByMuscle={hitsByMuscle}
