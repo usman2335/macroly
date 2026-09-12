@@ -1,10 +1,17 @@
 import { calculateWeeklyBudget, calculateZone, type Zone } from "@/lib/calorie";
-import { ZONE_LABEL, ZONE_SWATCH_CLASS } from "@/lib/zoneStyles";
+import { ZONE_LABEL, ZONE_SWATCH_CLASS, ZONE_TRACK_CLASS } from "@/lib/zoneStyles";
+import Meter from "../Meter";
 
 function remainingLabel(remaining: number): string {
   return remaining >= 0 ? `${remaining} cal left` : `${-remaining} cal over`;
 }
 
+/**
+ * "This week" is the hero — domain-rules.md: "the most important number in the whole app is
+ * calories remaining for the rest of the week." Large figure plus a meter, so the week's
+ * position inside its budget is visible, not just stated. "Today" is the same shape at a
+ * smaller size — a preview of the week, not a second hero.
+ */
 function Row({
   title,
   zone,
@@ -21,23 +28,29 @@ function Row({
   size: "large" | "small";
 }) {
   return (
-    <div className="flex items-baseline justify-between gap-3 py-2">
-      <div className="flex items-baseline gap-2">
-        <span className={`h-2.5 w-2.5 shrink-0 ${ZONE_SWATCH_CLASS[zone]}`} aria-hidden />
-        <div>
-          <p className="text-sm text-muted">
-            {title} · {ZONE_LABEL[zone]}
-          </p>
-          <p className={`font-mono text-ink ${size === "large" ? "text-3xl" : "text-xl"}`}>
-            {remainingLabel(remaining)}
-          </p>
-        </div>
+    <div className="py-3 first:pt-0 last:pb-0">
+      <div className="flex items-baseline justify-between gap-3">
+        <p className="text-sm text-muted">{title}</p>
+        <p className="text-xs text-muted">
+          {used}
+          <span className="mx-0.5">/</span>
+          {budget}
+        </p>
       </div>
-      <p className="shrink-0 text-right text-sm text-muted">
-        {used}
-        <span className="mx-0.5">/</span>
-        {budget}
+      <p
+        className={`font-mono text-ink ${size === "large" ? "mt-0.5 text-5xl font-medium tracking-tight" : "text-xl"}`}
+      >
+        {remainingLabel(remaining)}
       </p>
+      <div className={size === "large" ? "mt-3" : "mt-1.5"}>
+        <Meter
+          fraction={used / budget}
+          fillClassName={ZONE_SWATCH_CLASS[zone]}
+          trackClassName={ZONE_TRACK_CLASS[zone]}
+          size={size === "large" ? "md" : "sm"}
+        />
+      </div>
+      <p className="mt-1 text-xs text-muted">{ZONE_LABEL[zone]}</p>
     </div>
   );
 }

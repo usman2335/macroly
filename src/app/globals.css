@@ -1,12 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  --paper: #edefe6;
-  --surface: #e3e6d8;
-  --ink: #20241f;
-  --accent: #3d6b63;
-  --line: #d6d3c4;
-  --muted: #6b7268;
+  /* "Raspberry" — a warm blush base with a vivid berry accent for interactive elements
+     (buttons, links, selected states). Kept deliberately distinct from the zone triad below —
+     the accent means "tap this," the zones mean "this is your status," and the two must never
+     be readable as the same color. */
+  --paper: #fbf0f3;
+  --surface: #f4dfe6;
+  --ink: #2e1b23;
+  --accent: #c2178c;
+  --line: #ebd2dc;
+  --muted: #8c7078;
 
   --zone-target: #3f7d5c;
   --zone-target-bg: #e1ebe3;
@@ -31,19 +35,22 @@
   --color-zone-over: var(--zone-over);
   --color-zone-over-bg: var(--zone-over-bg);
 
-  --font-sans: var(--font-plex-sans);
-  --font-mono: var(--font-plex-mono);
-  --font-brand: var(--font-brand);
+  --font-sans: var(--font-sans-face);
+  --font-mono: var(--font-mono-face);
+  --font-brand: var(--font-brand-face);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --paper: #171a15;
-    --surface: #1d2118;
-    --ink: #e9e7db;
-    --accent: #6fa89c;
-    --line: #33362c;
-    --muted: #9ca394;
+    /* Same "Raspberry" identity, re-stepped for a dark ground rather than an automatic invert —
+       the accent is brightened until it re-clears separation from the zone colors on this
+       surface (validated separately from the light-mode figures above). */
+    --paper: #1f1417;
+    --surface: #2a1b20;
+    --ink: #f5e8ed;
+    --accent: #de2fa8;
+    --line: #3d2830;
+    --muted: #a8919a;
 
     --zone-target: #5fae84;
     --zone-target-bg: #1e2b21;

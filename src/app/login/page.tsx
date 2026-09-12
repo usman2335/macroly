@@ -17,7 +17,7 @@ export default function LoginPage() {
   return (
     <main className="flex min-h-dvh items-center justify-center bg-paper px-6">
       <form action={formAction} className="w-full max-w-sm">
-        <p className="font-brand text-3xl text-accent">Macroly</p>
+        <p className="py-1 font-brand text-4xl leading-none text-accent">Macroly</p>
         <p className="mt-1 text-sm text-muted">Calorie &amp; training ledger</p>
 
         <div className="mt-8 border-t border-line pt-6 space-y-5">

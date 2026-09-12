@@ -117,7 +117,7 @@ export default async function HomePage() {
           panel that never needs to scroll out of view. */}
       <div className="mx-auto flex w-full max-w-sm flex-col gap-5 lg:max-w-5xl">
         <div className="border-b border-line pb-4">
-          <p className="font-brand text-3xl text-accent">Macroly</p>
+          <p className="py-1 font-brand text-4xl leading-none text-accent">Macroly</p>
           <p className="mt-1 text-base text-muted">{getDailyGreeting(today)}</p>
         </div>
 

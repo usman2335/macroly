@@ -1,0 +1,8 @@
+Bulgatti — by Creatype Studio (https://creatypestudio.co/bulgatti)
+
+This is the free "demo" build of the font, downloaded from dafont.com. Its license is
+personal-use only — no commercial use. That's fine here: Macroly is a private, non-commercial
+app for two people (see CLAUDE.md), not a product being sold or distributed.
+
+If Macroly's status ever changes (goes public, gets sold, etc.), this font needs a commercial
+license first — see the link above, or foundry@creatypestudio.co.

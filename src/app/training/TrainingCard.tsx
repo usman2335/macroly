@@ -1,13 +1,33 @@
 import { calculateAdherence, calculateCoverage, calculateCombinedScore, formatPercent } from "@/lib/training";
+import Meter from "../Meter";
 
-function ScoreRow({ label, value, detail }: { label: string; value: number | null; detail?: string }) {
+// Training scores are a coverage measure, not a severity one — more is always better, there's
+// no "over" tier the way calories have. So the meter uses one hue at two strengths (fill/track)
+// rather than the zone triad, per the dataviz sequential-value rule (one hue, light → dark).
+const FILL = "bg-accent";
+const TRACK = "bg-accent/15";
+
+function ScoreRow({
+  label,
+  value,
+  detail,
+}: {
+  label: string;
+  value: number | null;
+  detail?: string;
+}) {
   return (
-    <div className="flex items-baseline justify-between py-2">
-      <span className="text-sm text-muted">{label}</span>
-      <span className="text-right">
-        <span className="font-mono text-ink">{value === null ? "—" : formatPercent(value)}</span>
-        {detail ? <span className="ml-2 text-sm text-muted">{detail}</span> : null}
-      </span>
+    <div className="py-2">
+      <div className="flex items-baseline justify-between">
+        <span className="text-sm text-muted">{label}</span>
+        <span className="text-right">
+          <span className="font-mono text-ink">{value === null ? "—" : formatPercent(value)}</span>
+          {detail ? <span className="ml-2 text-sm text-muted">{detail}</span> : null}
+        </span>
+      </div>
+      <div className="mt-1.5">
+        <Meter fraction={value ?? 0} fillClassName={FILL} trackClassName={TRACK} size="sm" />
+      </div>
     </div>
   );
 }
@@ -35,7 +55,9 @@ export default function TrainingCard({
   return (
     <div>
       <p className="text-sm text-muted">Training</p>
-      <p className="font-mono text-3xl text-ink">{combined === null ? "—" : formatPercent(combined)}</p>
+      <p className="mt-0.5 font-mono text-3xl font-medium tracking-tight text-ink">
+        {combined === null ? "—" : formatPercent(combined)}
+      </p>
       <div className="divide-y divide-line">
         <ScoreRow
           label="Adherence"

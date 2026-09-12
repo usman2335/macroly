@@ -27,9 +27,9 @@ export default function Dashboard({
   plannedGymDays: number;
 }) {
   return (
-    <div className="space-y-4 rounded-md bg-surface p-5">
+    <div className="space-y-4 rounded-lg bg-surface p-5 shadow-sm ring-1 ring-line/60">
       <div>
-        <p className="text-sm text-ink">Weekly overview</p>
+        <p className="text-sm font-medium text-ink">Weekly overview</p>
         <p className="text-xs text-muted">Where you stand this week, at a glance</p>
       </div>
 

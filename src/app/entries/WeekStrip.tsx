@@ -5,6 +5,11 @@ import { calculateWeeklyBudget, calculateZone } from "@/lib/calorie";
 import { ZONE_LABEL, ZONE_SWATCH_CLASS } from "@/lib/zoneStyles";
 import type { Entry } from "./EntryRow";
 
+/** Fixed pixel height of the bar track — small enough to stay compact across 7 columns on a
+ * phone, tall enough that a half-budget day and a near-zero day are visibly different, which a
+ * same-size status dot (the previous design) couldn't show. */
+const BAR_HEIGHT = 32;
+
 /**
  * Seven days at a glance for whichever week is currently loaded (see Module 3 in roadmap.md).
  * Purely derived from entriesByDate and workoutDates, already cached by WeekLog — no query of
@@ -83,21 +88,36 @@ export default function WeekStrip({
           const zone = logged ? calculateZone({ eaten, sedentaryMaintenance, activeMaintenance }) : null;
           const isSelected = date === selectedDate;
           const isFuture = date > today;
+          // Bar height scales with how much of the day's own budget was eaten — capped at full
+          // height rather than growing past it, so an over-budget day reads through color
+          // (zone-over) rather than an overflowing bar. A light day still gets a minimum sliver
+          // once something is logged, so "barely anything" stays visibly different from "nothing
+          // logged yet" instead of both rounding down to an empty bar.
+          const fillHeight =
+            logged && eaten > 0
+              ? Math.max(3, Math.round(Math.min(1, eaten / sedentaryMaintenance) * BAR_HEIGHT))
+              : 0;
 
           return (
             <button
               key={date}
               type="button"
               onClick={() => onSelectDate(date)}
-              className={`flex flex-col items-center gap-1 rounded-md border py-2 text-xs ${
+              className={`flex flex-col items-center gap-1.5 rounded-md border py-2 text-xs ${
                 isSelected ? "border-accent" : "border-transparent"
               }`}
             >
               <span className="text-muted">{weekdayLabel(date)}</span>
               <span
                 aria-hidden
-                className={`h-1.5 w-1.5 ${zone ? ZONE_SWATCH_CLASS[zone] : "bg-line"}`}
-              />
+                className="flex items-end justify-center rounded-sm bg-line"
+                style={{ height: BAR_HEIGHT, width: 10 }}
+              >
+                <span
+                  className={`w-full rounded-sm ${zone ? ZONE_SWATCH_CLASS[zone] : ""}`}
+                  style={{ height: fillHeight }}
+                />
+              </span>
               <span className={`font-mono ${isFuture && !logged ? "text-muted" : "text-ink"}`}>
                 {logged ? eaten : "—"}
               </span>
