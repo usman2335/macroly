@@ -55,3 +55,11 @@ week, and the focus-next-week list. Per-muscle weekly targets, editable in Setti
 ### Module 6 — Dashboard & polish
 One home screen combining this week's nutrition status and training status. Mobile polish — it
 should feel like an app on a phone, not a shrunk-down desktop site.
+
+### Module 7 — Quick add
+All six modules above are built; this is a post-M6 enhancement, not part of the original plan.
+A "Your usual" row above the quick-add form, surfacing foods logged often in the last 90 days
+(see [lib/quickFoods.ts](../src/lib/quickFoods.ts)) so a repeat meal is one tap instead of
+retyped label + calories. Still built into the home screen, not a separate page.
+
+*Done when:* a food eaten regularly can be logged in one tap.

@@ -2,6 +2,13 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { addDays, todayDateString } from "@/lib/date";
+import { rankQuickFoods, type QuickFood } from "@/lib/quickFoods";
+
+/** How far back to look for "usual" foods — long enough to catch a weekly staple, short enough
+ * that a food you stopped eating months ago quietly ages out instead of staying suggested
+ * forever. */
+const QUICK_FOODS_WINDOW_DAYS = 90;
 
 export type EntryRow = {
   id: string;
@@ -121,4 +128,23 @@ export async function fetchWeekEntries(
     })),
     workoutDates: (workouts ?? []).map((w) => w.session_date),
   };
+}
+
+/**
+ * "Your usual" foods for the quick-add row — see lib/quickFoods.ts for the ranking. Fetches raw
+ * recent history rather than aggregating in SQL: entry volume here is a couple of meals a day
+ * for two people, so a plain JS reduce is simpler than a database view and just as fast.
+ */
+export async function fetchQuickFoods(): Promise<QuickFood[]> {
+  const { supabase, user } = await requireUser();
+
+  const since = addDays(todayDateString(), -QUICK_FOODS_WINDOW_DAYS);
+
+  const { data } = await supabase
+    .from("food_entries")
+    .select("label, calories, entry_date")
+    .eq("user_id", user.id)
+    .gte("entry_date", since);
+
+  return rankQuickFoods(data ?? []);
 }
