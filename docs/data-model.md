@@ -12,10 +12,14 @@ muscles           id, slug, name, muscle_group, sort_order        (reference dat
 workouts          id, user_id, session_date, note, created_at
 workout_muscles   workout_id, muscle_id
 muscle_targets    user_id, muscle_id, weekly_target
+weight_logs       id, user_id, entry_date, weight_kg, created_at
 ```
 
 Entries are dated by `entry_date` (the day they belong to), not `created_at` — logging happens
 at the end of the day and sometimes the next morning.
+
+`weight_logs` has a unique `(user_id, entry_date)` constraint — one weigh-in a day; logging again
+the same day overwrites rather than adding a second row.
 
 Every table is scoped by `user_id` with RLS policies so a user can only read/write their own
 rows (see [CLAUDE.md](../CLAUDE.md) for the Supabase/RLS approach).

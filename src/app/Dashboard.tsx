@@ -1,5 +1,7 @@
 import NutritionCard from "./entries/NutritionCard";
 import TrainingCard from "./training/TrainingCard";
+import WeightCard from "./weight/WeightCard";
+import type { WeightEntry } from "./weight/actions";
 
 /**
  * Module 6: "one home screen combining this week's nutrition status and training status"
@@ -16,6 +18,9 @@ export default function Dashboard({
   targetsByMuscle,
   sessionsLogged,
   plannedGymDays,
+  latestWeightEntry,
+  previousWeightEntry,
+  fallbackWeightKg,
 }: {
   sedentaryMaintenance: number;
   activeMaintenance: number;
@@ -25,6 +30,9 @@ export default function Dashboard({
   targetsByMuscle: Record<string, number>;
   sessionsLogged: number;
   plannedGymDays: number;
+  latestWeightEntry: WeightEntry | null;
+  previousWeightEntry: WeightEntry | null;
+  fallbackWeightKg: number | null;
 }) {
   return (
     <div className="space-y-4 rounded-lg bg-surface p-5 shadow-sm ring-1 ring-line/60">
@@ -42,12 +50,19 @@ export default function Dashboard({
             eatenToday={eatenToday}
           />
         </div>
-        <div className="pt-4">
+        <div className="py-4">
           <TrainingCard
             hitsByMuscle={hitsByMuscle}
             targetsByMuscle={targetsByMuscle}
             sessionsLogged={sessionsLogged}
             plannedGymDays={plannedGymDays}
+          />
+        </div>
+        <div className="pt-4">
+          <WeightCard
+            latestEntry={latestWeightEntry}
+            previousEntry={previousWeightEntry}
+            fallbackWeightKg={fallbackWeightKg}
           />
         </div>
       </div>

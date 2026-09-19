@@ -33,11 +33,12 @@ export default async function HomePage() {
     { data: muscleTargets },
     { data: workoutsInWindow },
     { data: todaysWorkout },
+    { data: weightLogs },
   ] = await Promise.all([
     supabase
       .from("profiles")
       .select(
-        "display_name, sedentary_maintenance, active_maintenance, week_starts_on, gym_days_per_week",
+        "display_name, sedentary_maintenance, active_maintenance, week_starts_on, gym_days_per_week, weight_kg",
       )
       .eq("id", user.id)
       .maybeSingle(),
@@ -62,6 +63,13 @@ export default async function HomePage() {
       .eq("user_id", user.id)
       .eq("session_date", today)
       .maybeSingle(),
+    // Fetched in full, not windowed like food/workouts — a weigh-in a day for two users never
+    // grows large enough to need pagination, and the trend tab wants the whole history anyway.
+    supabase
+      .from("weight_logs")
+      .select("id, entry_date, weight_kg")
+      .eq("user_id", user.id)
+      .order("entry_date", { ascending: true }),
   ]);
 
   if (!profile) {
@@ -109,6 +117,10 @@ export default async function HomePage() {
       ).data?.map((row) => row.muscle_id) ?? []
     : [];
 
+  const weightHistory = weightLogs ?? [];
+  const latestWeightEntry = weightHistory.length > 0 ? weightHistory[weightHistory.length - 1] : null;
+  const previousWeightEntry = weightHistory.length > 1 ? weightHistory[weightHistory.length - 2] : null;
+
   return (
     <main className="min-h-dvh bg-paper px-6 py-8 lg:px-10 lg:py-10">
       {/* Phone: header, then dashboard, then tabs — single narrow column (unchanged). Desktop
@@ -155,6 +167,7 @@ export default async function HomePage() {
           initialMuscleIds={initialMuscleIds}
           hitsByMuscle={hitsByMuscle}
           targetsByMuscle={targetsByMuscle}
+          initialWeightHistory={weightHistory}
           dashboard={
             <Dashboard
               sedentaryMaintenance={profile.sedentary_maintenance}
@@ -165,6 +178,9 @@ export default async function HomePage() {
               targetsByMuscle={targetsByMuscle}
               sessionsLogged={workoutsThisWeek}
               plannedGymDays={profile.gym_days_per_week}
+              latestWeightEntry={latestWeightEntry}
+              previousWeightEntry={previousWeightEntry}
+              fallbackWeightKg={profile.weight_kg}
             />
           }
         />

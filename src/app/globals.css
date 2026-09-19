@@ -45,11 +45,11 @@
     /* Same "Raspberry" identity, re-stepped for a dark ground rather than an automatic invert —
        the accent is brightened until it re-clears separation from the zone colors on this
        surface (validated separately from the light-mode figures above). */
-    --paper: #1f1417;
-    --surface: #2a1b20;
+    --paper: #15141f;
+    --surface: #1b1d2a;
     --ink: #f5e8ed;
-    --accent: #de2fa8;
-    --line: #3d2830;
+    --accent: #9ede2f;
+    --line: #283d2b;
     --muted: #a8919a;
 
     --zone-target: #5fae84;

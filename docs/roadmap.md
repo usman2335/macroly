@@ -63,3 +63,13 @@ A "Your usual" row above the quick-add form, surfacing foods logged often in the
 retyped label + calories. Still built into the home screen, not a separate page.
 
 *Done when:* a food eaten regularly can be logged in one tap.
+
+### Module 8 — Weight tracking
+Another post-M6 enhancement, not part of the original plan (see
+[open-questions.md](open-questions.md)). A `weight_logs` table, one row per day. A small
+dashboard card showing the most recent weigh-in (falling back to the profile's onboarding weight
+until a first one is logged). A "Weight" tab, alongside Nutrition and Training, holding the
+trend-over-time chart and a day-based log/edit form (same pick-a-date-and-save shape as
+Training's log). No target weight, no goal-tracking, no BMI — just the number over time.
+
+*Done when:* a weigh-in can be logged in a few taps and the trend is visible at a glance.

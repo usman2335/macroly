@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import HomeTabs from "./HomeTabs";
 import type { Muscle } from "@/lib/muscles";
 import type { EntryRow as WeekEntryRow } from "./entries/actions";
+import type { WeightEntry } from "./weight/actions";
 
 /**
  * Coordinates the desktop two-column layout: measures the dashboard's actual rendered height
@@ -24,6 +25,7 @@ export default function HomeLayout({
   initialMuscleIds,
   hitsByMuscle,
   targetsByMuscle,
+  initialWeightHistory,
 }: {
   dashboard: ReactNode;
   today: string;
@@ -37,6 +39,7 @@ export default function HomeLayout({
   initialMuscleIds: string[];
   hitsByMuscle: Record<string, number>;
   targetsByMuscle: Record<string, number>;
+  initialWeightHistory: WeightEntry[];
 }) {
   const dashboardRef = useRef<HTMLDivElement>(null);
   const [dashboardHeight, setDashboardHeight] = useState<number>();
@@ -70,6 +73,7 @@ export default function HomeLayout({
           initialMuscleIds={initialMuscleIds}
           hitsByMuscle={hitsByMuscle}
           targetsByMuscle={targetsByMuscle}
+          initialWeightHistory={initialWeightHistory}
           sidebarMinHeight={dashboardHeight}
         />
       </div>

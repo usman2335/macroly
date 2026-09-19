@@ -5,14 +5,17 @@ import Link from "next/link";
 import WeekLog from "./entries/WeekLog";
 import TrainingLog from "./training/TrainingLog";
 import TrainingDetails from "./training/TrainingDetails";
+import WeightPanel from "./weight/WeightPanel";
 import type { Muscle } from "@/lib/muscles";
 import type { EntryRow as WeekEntryRow } from "./entries/actions";
+import type { WeightEntry } from "./weight/actions";
 
-type Tab = "nutrition" | "training";
+type Tab = "nutrition" | "training" | "weight";
 
 const TABS: readonly [Tab, string][] = [
   ["nutrition", "Nutrition"],
   ["training", "Training"],
+  ["weight", "Weight"],
 ];
 
 export default function HomeTabs({
@@ -27,6 +30,7 @@ export default function HomeTabs({
   initialMuscleIds,
   hitsByMuscle,
   targetsByMuscle,
+  initialWeightHistory,
   sidebarMinHeight,
 }: {
   today: string;
@@ -40,6 +44,7 @@ export default function HomeTabs({
   initialMuscleIds: string[];
   hitsByMuscle: Record<string, number>;
   targetsByMuscle: Record<string, number>;
+  initialWeightHistory: WeightEntry[];
   /** The dashboard panel's measured height (desktop only) — see HomeLayout. The nav sidebar
    * matches it so the account controls at its bottom line up with the dashboard's bottom,
    * instead of the previous `100vh` guess, which pinned them to the actual viewport edge. */
@@ -110,7 +115,7 @@ export default function HomeTabs({
             initialFood={initialFood}
             initialWorkoutDates={initialWorkoutDates}
           />
-        ) : (
+        ) : tab === "training" ? (
           <div className="flex flex-col gap-5">
             <TrainingDetails
               muscles={muscles}
@@ -123,6 +128,8 @@ export default function HomeTabs({
               initialMuscleIds={initialMuscleIds}
             />
           </div>
+        ) : (
+          <WeightPanel initialHistory={initialWeightHistory} initialDate={today} />
         )}
       </div>
 
