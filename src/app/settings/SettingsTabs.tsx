@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import ProfileForm, { type ProfileFormValues } from "./ProfileForm";
 import MuscleTargetsForm from "./MuscleTargetsForm";
+import { withViewTransition } from "@/lib/viewTransition";
 import type { Muscle } from "@/lib/muscles";
 
 type Section = "profile" | "muscles";
@@ -31,11 +32,14 @@ export default function SettingsTabs({
           <button
             key={value}
             type="button"
-            onClick={() => setSection(value)}
-            className={`rounded-md border-l-2 px-3 py-2 text-left text-sm ${
+            onClick={() => withViewTransition(() => setSection(value))}
+            style={
               section === value
-                ? "border-accent bg-surface text-ink"
-                : "border-transparent text-muted"
+                ? ({ viewTransitionName: "settings-tab-indicator-desktop" } as CSSProperties)
+                : undefined
+            }
+            className={`rounded-md px-3 py-2 text-left text-sm ${
+              section === value ? "bg-surface text-ink" : "text-muted"
             }`}
           >
             {label}
@@ -50,7 +54,12 @@ export default function SettingsTabs({
           <button
             key={value}
             type="button"
-            onClick={() => setSection(value)}
+            onClick={() => withViewTransition(() => setSection(value))}
+            style={
+              section === value
+                ? ({ viewTransitionName: "settings-tab-indicator-mobile" } as CSSProperties)
+                : undefined
+            }
             className={`-mb-px border-b-2 pb-2 text-sm ${
               section === value ? "border-accent text-ink" : "border-transparent text-muted"
             }`}

@@ -1,4 +1,7 @@
+"use client";
+
 import { formatDateForDisplay } from "@/lib/date";
+import { useAnimatedNumber } from "../useAnimatedNumber";
 import type { WeightEntry } from "./actions";
 
 function formatWeight(kg: number): string {
@@ -27,14 +30,17 @@ export default function WeightCard({
   previousEntry: WeightEntry | null;
   fallbackWeightKg: number | null;
 }) {
+  const animatedFallback = useAnimatedNumber(fallbackWeightKg ?? 0);
+  const animatedLatest = useAnimatedNumber(latestEntry?.weight_kg ?? 0);
+
   if (!latestEntry) {
     return (
       <div>
-        <p className="text-sm text-muted">Weight</p>
+        <p className="text-sm font-medium text-muted">Weight</p>
         {fallbackWeightKg ? (
           <>
             <p className="mt-0.5 font-mono text-3xl font-medium tracking-tight text-ink">
-              {formatWeight(fallbackWeightKg)}
+              {formatWeight(animatedFallback)}
               <span className="ml-1 text-base text-muted">kg</span>
             </p>
             <p className="mt-1 text-xs text-muted">
@@ -50,9 +56,9 @@ export default function WeightCard({
 
   return (
     <div>
-      <p className="text-sm text-muted">Weight</p>
+      <p className="text-sm font-medium text-muted">Weight</p>
       <p className="mt-0.5 font-mono text-3xl font-medium tracking-tight text-ink">
-        {formatWeight(latestEntry.weight_kg)}
+        {formatWeight(animatedLatest)}
         <span className="ml-1 text-base text-muted">kg</span>
       </p>
       <p className="mt-1 text-xs text-muted">

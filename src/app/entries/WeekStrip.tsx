@@ -2,7 +2,7 @@
 
 import { addDays, formatWeekRange, weekdayLabel, todayDateString } from "@/lib/date";
 import { calculateWeeklyBudget, calculateZone } from "@/lib/calorie";
-import { ZONE_LABEL, ZONE_SWATCH_CLASS } from "@/lib/zoneStyles";
+import { ZONE_LABEL, ZONE_SWATCH_CLASS, ZONE_TEXT_CLASS } from "@/lib/zoneStyles";
 import type { Entry } from "./EntryRow";
 
 /** Fixed pixel height of the bar track — small enough to stay compact across 7 columns on a
@@ -64,7 +64,7 @@ export default function WeekStrip({
         <button
           type="button"
           onClick={() => onNavigateWeek(-1)}
-          className="px-1 text-muted"
+          className="flex h-11 w-11 items-center justify-center text-muted"
           aria-label="Previous week"
         >
           ‹
@@ -76,7 +76,7 @@ export default function WeekStrip({
         <button
           type="button"
           onClick={() => onNavigateWeek(1)}
-          className="px-1 text-muted"
+          className="flex h-11 w-11 items-center justify-center text-muted"
           aria-label="Next week"
         >
           ›
@@ -130,7 +130,8 @@ export default function WeekStrip({
       </div>
 
       <p className="text-sm text-muted">
-        Used {weekUsed} / {weekBudget} · {ZONE_LABEL[weekZone]}
+        Used {weekUsed} / {weekBudget} ·{" "}
+        <span className={`font-medium ${ZONE_TEXT_CLASS[weekZone]}`}>{ZONE_LABEL[weekZone]}</span>
       </p>
     </div>
   );

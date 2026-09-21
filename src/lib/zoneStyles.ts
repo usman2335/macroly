@@ -28,3 +28,13 @@ export const ZONE_TRACK_CLASS: Record<Zone, string> = {
   acceptable: "bg-zone-acceptable-bg",
   over: "bg-zone-over-bg",
 };
+
+/** Tints the zone status word itself (ZONE_LABEL) with its own hue, for the spots where that
+ * word is the actual readout, not just a caption next to a colored meter/swatch — otherwise the
+ * single most important status on the page ("Over") sat in the same neutral grey as every other
+ * label in the app. */
+export const ZONE_TEXT_CLASS: Record<Zone, string> = {
+  "on-target": "text-zone-target",
+  acceptable: "text-zone-acceptable",
+  over: "text-zone-over",
+};

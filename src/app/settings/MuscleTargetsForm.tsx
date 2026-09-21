@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { useActionState } from "react";
 import { saveMuscleTargets, type ProfileFormState } from "./actions";
+import { withViewTransition } from "@/lib/viewTransition";
 import { capitalize, groupMuscles, type Muscle } from "@/lib/muscles";
 
 const initialState: ProfileFormState = { error: "" };
@@ -34,7 +35,12 @@ export default function MuscleTargetsForm({
           <button
             key={group}
             type="button"
-            onClick={() => setActiveGroup(group)}
+            onClick={() => withViewTransition(() => setActiveGroup(group))}
+            style={
+              activeGroup === group
+                ? ({ viewTransitionName: "muscle-group-indicator" } as CSSProperties)
+                : undefined
+            }
             className={`-mb-px border-b-2 px-2 py-2 text-sm ${
               activeGroup === group ? "border-accent text-ink" : "border-transparent text-muted"
             }`}

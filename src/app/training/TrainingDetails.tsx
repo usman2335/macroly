@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { getFocusList } from "@/lib/training";
+import { withViewTransition } from "@/lib/viewTransition";
 import { capitalize, groupMuscles, type Muscle } from "@/lib/muscles";
 
 /**
@@ -41,12 +42,14 @@ export default function TrainingDetails({
           </ul>
         </div>
       ) : (
-        <p className="text-sm text-muted">Every muscle hit its target this week.</p>
+        <p className="text-sm font-medium text-ink">
+          Every muscle hit its target this week. Suspiciously disciplined.
+        </p>
       )}
 
       <button
         type="button"
-        onClick={() => setShowAll((v) => !v)}
+        onClick={() => withViewTransition(() => setShowAll((v) => !v))}
         className="text-sm text-accent underline underline-offset-2"
       >
         {showAll ? "Hide all muscles" : "Show all muscles"}

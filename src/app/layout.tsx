@@ -9,8 +9,7 @@ import "./globals.css";
 const publicSans = Public_Sans({
   variable: "--font-sans-face",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
+  weight: ["400", "500"],
 });
 
 // Bulgatti — wordmark only, see fonts/BULGATTI-LICENSE.txt (personal-use font; Macroly is a
@@ -28,7 +27,7 @@ const bulgatti = localFont({
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono-face",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {

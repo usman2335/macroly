@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, type CSSProperties } from "react";
 import { deleteEntry, updateEntry } from "./actions";
+import { withViewTransition } from "@/lib/viewTransition";
 
 export type Entry = {
   id: string;
@@ -24,6 +25,10 @@ export default function EntryRow({
   const [error, setError] = useState("");
   const [pending, startTransition] = useTransition();
 
+  // Unique per entry (not a static name) — several rows could theoretically be mid-edit at once,
+  // and the View Transitions API errors if two elements claim the same name simultaneously.
+  const rowTransitionStyle = { viewTransitionName: `entry-row-${entry.id}` } as CSSProperties;
+
   function save() {
     const formData = new FormData();
     formData.set("id", entry.id);
@@ -37,7 +42,7 @@ export default function EntryRow({
         return;
       }
       setError("");
-      setEditing(false);
+      withViewTransition(() => setEditing(false));
       onUpdated({ ...entry, label: result.entry.label, amount: result.entry.amount });
     });
   }
@@ -54,7 +59,7 @@ export default function EntryRow({
 
   if (editing) {
     return (
-      <div className="space-y-2 py-2">
+      <div className="space-y-2 py-2" style={rowTransitionStyle}>
         <div className="flex items-center gap-2">
           <input
             value={label}
@@ -72,7 +77,11 @@ export default function EntryRow({
         </div>
         {error ? <p className="text-xs text-zone-over">{error}</p> : null}
         <div className="flex justify-end gap-4 text-sm">
-          <button type="button" onClick={() => setEditing(false)} className="text-muted">
+          <button
+            type="button"
+            onClick={() => withViewTransition(() => setEditing(false))}
+            className="text-muted"
+          >
             Cancel
           </button>
           <button type="button" onClick={remove} disabled={pending} className="text-zone-over">
@@ -89,7 +98,8 @@ export default function EntryRow({
   return (
     <button
       type="button"
-      onClick={() => setEditing(true)}
+      onClick={() => withViewTransition(() => setEditing(true))}
+      style={rowTransitionStyle}
       className="flex w-full items-center justify-between py-2 text-left"
     >
       <span className="truncate text-ink">{entry.label}</span>

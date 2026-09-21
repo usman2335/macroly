@@ -48,7 +48,7 @@ export default async function SettingsPage() {
         <p className="mt-1 text-sm text-muted">
           {profile
             ? "Every field here is editable, including the maintenance numbers."
-            : "A few stats to compute your maintenance calories."}
+            : "A few stats to compute your maintenance calories — the math is ours, the eating is yours."}
         </p>
       </div>
 

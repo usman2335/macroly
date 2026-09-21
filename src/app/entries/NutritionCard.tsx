@@ -1,6 +1,9 @@
+"use client";
+
 import { calculateWeeklyBudget, calculateZone, type Zone } from "@/lib/calorie";
-import { ZONE_LABEL, ZONE_SWATCH_CLASS, ZONE_TRACK_CLASS } from "@/lib/zoneStyles";
+import { ZONE_LABEL, ZONE_SWATCH_CLASS, ZONE_TEXT_CLASS, ZONE_TRACK_CLASS } from "@/lib/zoneStyles";
 import Meter from "../Meter";
+import { useAnimatedNumber } from "../useAnimatedNumber";
 
 function remainingLabel(remaining: number): string {
   return remaining >= 0 ? `${remaining} cal left` : `${-remaining} cal over`;
@@ -27,12 +30,15 @@ function Row({
   budget: number;
   size: "large" | "small";
 }) {
+  const animatedUsed = Math.round(useAnimatedNumber(used));
+  const animatedRemaining = Math.round(useAnimatedNumber(remaining));
+
   return (
     <div className="py-3 first:pt-0 last:pb-0">
       <div className="flex items-baseline justify-between gap-3">
         <p className="text-sm text-muted">{title}</p>
         <p className="text-xs text-muted">
-          {used}
+          {animatedUsed}
           <span className="mx-0.5">/</span>
           {budget}
         </p>
@@ -40,7 +46,7 @@ function Row({
       <p
         className={`font-mono text-ink ${size === "large" ? "mt-0.5 text-5xl font-medium tracking-tight" : "text-xl"}`}
       >
-        {remainingLabel(remaining)}
+        {remainingLabel(animatedRemaining)}
       </p>
       <div className={size === "large" ? "mt-3" : "mt-1.5"}>
         <Meter
@@ -50,7 +56,7 @@ function Row({
           size={size === "large" ? "md" : "sm"}
         />
       </div>
-      <p className="mt-1 text-xs text-muted">{ZONE_LABEL[zone]}</p>
+      <p className={`mt-1 text-xs font-medium ${ZONE_TEXT_CLASS[zone]}`}>{ZONE_LABEL[zone]}</p>
     </div>
   );
 }
@@ -82,7 +88,7 @@ export default function NutritionCard({
 
   return (
     <div>
-      <p className="text-sm text-muted">Nutrition</p>
+      <p className="text-sm font-medium text-muted">Nutrition</p>
       <div className="divide-y divide-line">
         <Row
           title="This week"

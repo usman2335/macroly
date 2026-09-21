@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { addDays, formatDateForDisplay } from "@/lib/date";
 import { capitalize, groupMuscles, type Muscle } from "@/lib/muscles";
+import { withViewTransition } from "@/lib/viewTransition";
 import { fetchWorkoutMuscles, saveWorkout } from "./actions";
 
 function sameMembers(a: Set<string>, b: Set<string>): boolean {
@@ -42,8 +43,10 @@ export default function TrainingLog({
 
   async function changeDate(newDate: string) {
     if (isDirty) return; // save or discard first — see the guard on the nav buttons below
-    setSelectedDate(newDate);
-    setError("");
+    withViewTransition(() => {
+      setSelectedDate(newDate);
+      setError("");
+    });
     if (savedByDate[newDate]) return;
 
     setLoading(true);
@@ -88,7 +91,7 @@ export default function TrainingLog({
           type="button"
           onClick={() => changeDate(addDays(selectedDate, -1))}
           disabled={isDirty}
-          className="px-1 text-muted disabled:opacity-40"
+          className="flex h-11 w-11 items-center justify-center text-muted disabled:opacity-40"
           aria-label="Previous day"
         >
           ‹
@@ -101,7 +104,7 @@ export default function TrainingLog({
           type="button"
           onClick={() => changeDate(addDays(selectedDate, 1))}
           disabled={isDirty}
-          className="px-1 text-muted disabled:opacity-40"
+          className="flex h-11 w-11 items-center justify-center text-muted disabled:opacity-40"
           aria-label="Next day"
         >
           ›

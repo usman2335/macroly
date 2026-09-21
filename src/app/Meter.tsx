@@ -25,7 +25,10 @@ export default function Meter({
     <div
       className={`w-full overflow-hidden rounded-full ${trackClassName} ${size === "sm" ? "h-1" : "h-1.5"}`}
     >
-      <div className={`h-full rounded-full ${fillClassName}`} style={{ width }} />
+      <div
+        className={`h-full rounded-full transition-[width,background-color] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${fillClassName}`}
+        style={{ width }}
+      />
     </div>
   );
 }

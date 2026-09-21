@@ -10,11 +10,17 @@
   --ink: #2e1b23;
   --accent: #c2178c;
   --line: #ebd2dc;
-  --muted: #8c7078;
+  /* Darkened a few points from the original #8c7078 — that value read at 4.01:1 on --paper and
+     3.52:1 on --surface, both below the 4.5:1 AA floor for the small caption/label text this
+     token is used for everywhere. Same hue, just legible. */
+  --muted: #755e65;
 
-  --zone-target: #3f7d5c;
+  /* Darkened a few points each from #3f7d5c / #9c6b14 — both fell short of 4.5:1 AA against
+     --paper, --surface, and their own -bg pill tint (as low as 3.65:1). --zone-over already
+     cleared AA everywhere and is unchanged. Same three hues, now all legible at caption size. */
+  --zone-target: #386f52;
   --zone-target-bg: #e1ebe3;
-  --zone-acceptable: #9c6b14;
+  --zone-acceptable: #855b11;
   --zone-acceptable-bg: #efe6d2;
   --zone-over: #a8452f;
   --zone-over-bg: #f0e1dc;
@@ -64,4 +70,36 @@
 body {
   background: var(--paper);
   color: var(--ink);
+}
+
+/* One motion language for every View Transition in the app — tab switches, day/week nav, the
+   entry read/edit toggle — rather than each surface inventing its own timing. Matches the
+   expo-out curve used by useAnimatedNumber.ts for hero-figure tweens, so structural morphs and
+   value changes decelerate the same way. */
+::view-transition-group(*) {
+  animation-duration: 220ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+::view-transition-old(*),
+::view-transition-new(*) {
+  animation-duration: 180ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+
+  /* Covers the Meter fill/color transition (Meter.tsx) and the new-entry entrance transition
+     (WeekLog.tsx) — both plain CSS transitions, not view-transitions, so they need their own
+     opt-out here. useAnimatedNumber.ts checks this same preference in JS for the same reason. */
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
 }

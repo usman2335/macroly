@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import Link from "next/link";
+import { withViewTransition } from "@/lib/viewTransition";
 import WeekLog from "./entries/WeekLog";
 import TrainingLog from "./training/TrainingLog";
 import TrainingDetails from "./training/TrainingDetails";
@@ -68,11 +69,14 @@ export default function HomeTabs({
             <button
               key={value}
               type="button"
-              onClick={() => setTab(value)}
-              className={`rounded-md border-l-2 px-3 py-2 text-left text-sm ${
+              onClick={() => withViewTransition(() => setTab(value))}
+              style={
                 tab === value
-                  ? "border-accent bg-surface text-ink"
-                  : "border-transparent text-muted"
+                  ? ({ viewTransitionName: "home-tab-indicator-desktop" } as CSSProperties)
+                  : undefined
+              }
+              className={`rounded-md px-3 py-2 text-left text-sm ${
+                tab === value ? "bg-surface text-ink" : "text-muted"
               }`}
             >
               {label}
@@ -140,7 +144,12 @@ export default function HomeTabs({
             <button
               key={value}
               type="button"
-              onClick={() => setTab(value)}
+              onClick={() => withViewTransition(() => setTab(value))}
+              style={
+                tab === value
+                  ? ({ viewTransitionName: "home-tab-indicator-mobile" } as CSSProperties)
+                  : undefined
+              }
               className={`flex-1 border-t-2 py-3 text-sm ${
                 tab === value ? "border-accent text-ink" : "border-transparent text-muted"
               }`}

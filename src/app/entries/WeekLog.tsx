@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { addDays, formatDateForDisplay, getWeekStart } from "@/lib/date";
+import { withViewTransition } from "@/lib/viewTransition";
 import { fetchWeekEntries, type EntryRow as WeekEntryRow } from "./actions";
 import QuickAddForm from "./QuickAddForm";
 import EntryRowItem, { type Entry } from "./EntryRow";
@@ -53,17 +54,21 @@ export default function WeekLog({
   }
 
   function changeDate(newDate: string) {
-    setSelectedDate(newDate);
-    const newWeekStart = getWeekStart(newDate, weekStartsOn);
-    if (newWeekStart !== weekStart) {
-      loadWeek(newWeekStart);
-    }
+    withViewTransition(() => {
+      setSelectedDate(newDate);
+      const newWeekStart = getWeekStart(newDate, weekStartsOn);
+      if (newWeekStart !== weekStart) {
+        loadWeek(newWeekStart);
+      }
+    });
   }
 
   function navigateWeek(direction: -1 | 1) {
-    const newWeekStart = addDays(weekStart, direction * 7);
-    setSelectedDate(newWeekStart);
-    loadWeek(newWeekStart);
+    withViewTransition(() => {
+      const newWeekStart = addDays(weekStart, direction * 7);
+      setSelectedDate(newWeekStart);
+      loadWeek(newWeekStart);
+    });
   }
 
   // The dashboard's nutrition card lives outside this component now (Module 6) and gets its
@@ -114,7 +119,7 @@ export default function WeekLog({
         <button
           type="button"
           onClick={() => changeDate(addDays(selectedDate, -1))}
-          className="px-1 text-muted"
+          className="flex h-11 w-11 items-center justify-center text-muted"
           aria-label="Previous day"
         >
           ‹
@@ -126,7 +131,7 @@ export default function WeekLog({
         <button
           type="button"
           onClick={() => changeDate(addDays(selectedDate, 1))}
-          className="px-1 text-muted"
+          className="flex h-11 w-11 items-center justify-center text-muted"
           aria-label="Next day"
         >
           ›
@@ -138,12 +143,15 @@ export default function WeekLog({
       {entries.length > 0 ? (
         <div className="divide-y divide-line border-y border-line">
           {entries.map((entry) => (
-            <EntryRowItem
+            // This wrapper (not EntryRowItem itself) owns the entrance transition — it mounts
+            // fresh exactly once, when the entry is first added to the list, and stays mounted
+            // across the item's own read/edit toggle, which is a separate View Transition.
+            <div
               key={entry.id}
-              entry={entry}
-              onUpdated={handleUpdated}
-              onDeleted={handleDeleted}
-            />
+              className="starting:-translate-y-1 starting:opacity-0 transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
+            >
+              <EntryRowItem entry={entry} onUpdated={handleUpdated} onDeleted={handleDeleted} />
+            </div>
           ))}
         </div>
       ) : (

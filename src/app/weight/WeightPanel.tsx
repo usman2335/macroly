@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { addDays, formatDateForDisplay } from "@/lib/date";
+import { withViewTransition } from "@/lib/viewTransition";
 import { deleteWeightEntry, logWeight, type WeightEntry } from "./actions";
 import WeightTrendChart from "./WeightTrendChart";
 
@@ -25,10 +26,12 @@ export default function WeightPanel({
 
   function changeDate(newDate: string) {
     if (isDirty) return; // save or discard first — see the guard on the nav buttons below
-    setSelectedDate(newDate);
-    const entry = history.find((e) => e.entry_date === newDate) ?? null;
-    setDraft(entry ? String(entry.weight_kg) : "");
-    setError("");
+    withViewTransition(() => {
+      setSelectedDate(newDate);
+      const entry = history.find((e) => e.entry_date === newDate) ?? null;
+      setDraft(entry ? String(entry.weight_kg) : "");
+      setError("");
+    });
   }
 
   function discard() {
@@ -82,7 +85,7 @@ export default function WeightPanel({
             type="button"
             onClick={() => changeDate(addDays(selectedDate, -1))}
             disabled={isDirty}
-            className="px-1 text-muted disabled:opacity-40"
+            className="flex h-11 w-11 items-center justify-center text-muted disabled:opacity-40"
             aria-label="Previous day"
           >
             ‹
@@ -92,7 +95,7 @@ export default function WeightPanel({
             type="button"
             onClick={() => changeDate(addDays(selectedDate, 1))}
             disabled={isDirty}
-            className="px-1 text-muted disabled:opacity-40"
+            className="flex h-11 w-11 items-center justify-center text-muted disabled:opacity-40"
             aria-label="Next day"
           >
             ›

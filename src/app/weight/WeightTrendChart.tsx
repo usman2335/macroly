@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { formatDateForDisplay } from "@/lib/date";
+import { useAnimatedNumber } from "../useAnimatedNumber";
 import type { WeightEntry } from "./actions";
 
 const CHART_HEIGHT = 100;
@@ -24,9 +25,19 @@ function daysBetween(a: string, b: string): number {
  */
 export default function WeightTrendChart({ history }: { history: WeightEntry[] }) {
   const [selectedIndex, setSelectedIndex] = useState(history.length - 1);
+  // Called unconditionally (Rules of Hooks) even though only one branch below ends up using
+  // each value.
+  const animatedSingle = useAnimatedNumber(history[0]?.weight_kg ?? 0);
+  const selectedWeight =
+    history[selectedIndex]?.weight_kg ?? history[history.length - 1]?.weight_kg ?? 0;
+  const animatedSelected = useAnimatedNumber(selectedWeight);
 
   if (history.length === 0) {
-    return <p className="text-sm text-muted">Log a weigh-in to start your trend.</p>;
+    return (
+      <p className="text-sm text-muted">
+        No weigh-ins yet — the scale isn&apos;t going to lie to itself. Log one below.
+      </p>
+    );
   }
 
   if (history.length === 1) {
@@ -34,7 +45,7 @@ export default function WeightTrendChart({ history }: { history: WeightEntry[] }
     return (
       <div>
         <p className="font-mono text-3xl font-medium tracking-tight text-ink">
-          {only.weight_kg.toFixed(1)}
+          {animatedSingle.toFixed(1)}
           <span className="ml-1 text-base text-muted">kg</span>
         </p>
         <p className="mt-1 text-xs text-muted">
@@ -162,7 +173,7 @@ export default function WeightTrendChart({ history }: { history: WeightEntry[] }
 
       <p className="text-sm text-ink">
         {formatDateForDisplay(selected.entry.entry_date)}{" "}
-        <span className="font-mono">{selected.entry.weight_kg.toFixed(1)} kg</span>
+        <span className="font-mono">{animatedSelected.toFixed(1)} kg</span>
       </p>
     </div>
   );
